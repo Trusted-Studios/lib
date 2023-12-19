@@ -48,27 +48,15 @@ end
 
 ---@param name string
 ---@param inVeh boolean
----@param x number  | vector3 | vector4
----@param y number | nil
----@param z number | nil
----@param h number | nil
+---@param coords vector3 | vector4
 ---@return number
-function Game.SpawnVehicle(name, inVeh, x, y, z, h)
+function Game.SpawnVehicle(name, inVeh, coords)
     local ped = PlayerPedId()
     local model = GetHashKey(name)
+    local x, y, z, h = table.unpack(coords)
 
     RequestModel(model)
     repeat Wait(10) until HasModelLoaded(model)
-
-    if type(x) == 'vector3' then
-        x, y, z = table.unpack(x)
-    elseif type(x) == 'vector4' then
-        x, y, z, h = table.unpack(x)
-    end
-
-    if not x or not y or not z then
-        x, y, z = table.unpack(GetEntityCoords(ped, false))
-    end
 
     local newVehicle = CreateVehicle(name, x, y, z, h or GetEntityHeading(ped), true, false)
 
@@ -252,6 +240,34 @@ function Game.GetAdvancedSideField(entity, side, multiplier)
     return { x = math.cos(hr) * multiplier, y = math.sin(hr) * multiplier }
 end
 
+---@param h number
+---@param side string
+---@param multiplier number
+---@return table
+function Math.GetAdvancedSideFieldFromHeading(h, side, multiplier)
+    local add
+    if side == 'left' then 
+        add = 180.0
+    elseif side == 'right' then
+        add = 0.0
+    end
+    local hr = h + add
+    if hr < 0.0 then hr = 360.0 + hr end
+    hr = hr * 0.0174533
+    return { x = math.cos(hr) * multiplier, y = math.sin(hr) * multiplier }
+end
+
+---@param ped number
+---@param targetCoords vector3
+---@param distance number
+---@return boolean
+function Game.GetDistance(ped, targetCoords, distance)
+    local coords = GetEntityCoords(ped)
+    ---@diagnostic disable-next-line: missing-parameter, param-type-mismatch
+    local dist = Vdist(coords, targetCoords)
+    return dist <= distance
+end
+
 Game.Location = {}
 
 ---@class Location
@@ -280,6 +296,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
 
     function self:isNearCoords(coord, distance)
         local playerCoords = GetEntityCoords(PlayerPedId())
+        ---@diagnostic disable-next-line: param-type-mismatch
         return Vdist(playerCoords, table.unpack(coord)) <= distance
     end
 
