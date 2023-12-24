@@ -179,11 +179,15 @@ end
 ---@param y number
 ---@param z number
 ---@return number
-function Game.SpawnObjectAtCoords(modelHash, x, y, z)
+function Game.SpawnObjectAtCoords(modelHash, x, y, z, h, isNetwork)
     RequestModel(modelHash)
     repeat Wait(10) until HasModelLoaded(modelHash)
 
-    local object = CreateObjectNoOffset(modelHash, x, y, z, true, false, true)
+    local object = CreateObjectNoOffset(modelHash, x, y, z, isNetwork, false, true)
+
+    if h then
+        SetEntityHeading(object, h)
+    end
 
     PlaceObjectOnGroundProperly(object)
     FreezeEntityPosition(object, true)
