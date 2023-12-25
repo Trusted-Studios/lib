@@ -17,8 +17,6 @@ Callback = {
 }
 
 function Callback:Register(eventName, callback)
-    print(eventName)
-
     self.serverCallbacks[eventName] = callback
 end
 

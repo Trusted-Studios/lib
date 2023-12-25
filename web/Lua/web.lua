@@ -50,4 +50,3 @@ end
 function Web:IsComponentOpen(component)
     return self[component]?.visible
 end
-

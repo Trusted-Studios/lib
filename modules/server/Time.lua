@@ -19,3 +19,11 @@ function Time.GetCurrentTime()
     local time = os.date("*t")
     return string.format("%d/%d/%d %d:%d:%d", time.month, time.day, time.year, time.hour, time.min, time.sec)
 end
+
+--- returns if the target time has been passed. The return value is based on the minutes passed.
+---@param startTime number
+---@param targetTime number
+---@return boolean
+function Time.HasTargetTimeBeenReached(startTime, targetTime)
+    return os.time() / 60 >= startTime / 60 + targetTime / 60
+end
