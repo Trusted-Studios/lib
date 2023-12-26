@@ -180,15 +180,24 @@ end
 ---@param z number
 ---@return number
 function Game.SpawnObjectAtCoords(modelHash, x, y, z, h, isNetwork)
+    if type(x) == "vector3" then
+        isNetwork = y
+        h = GetEntityCoords(PlayerPedId())
+        x, y, z in x
+    end
+
+    if type(x) == " vector4" then
+        isNetwork = y
+        x, y, z, h = table.unpack(x)
+    end
+
     RequestModel(modelHash)
     repeat Wait(10) until HasModelLoaded(modelHash)
 
-    local object = CreateObjectNoOffset(modelHash, x, y, z, isNetwork, false, true)
+    local object <const> = CreateObjectNoOffset(modelHash, x, y, z, isNetwork, false, true)
 
-    if h then
-        SetEntityHeading(object, h)
-    end
-
+    
+    SetEntityHeading(object, h)
     PlaceObjectOnGroundProperly(object)
     FreezeEntityPosition(object, true)
     SetModelAsNoLongerNeeded(modelHash)

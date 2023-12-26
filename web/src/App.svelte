@@ -20,7 +20,9 @@
   
     // Modal
     function confirmModal() {
-      fetchNui('confirmed:modal');
+        fetchNui('confirmed:modal', {
+            count: 10,
+        });
     }
   
     let modalOpen = true;
