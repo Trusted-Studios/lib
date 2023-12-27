@@ -1,22 +1,31 @@
 <script lang="ts">
     import { Button, Modal } from "flowbite-svelte";
     import { ExclamationCircleOutline } from "flowbite-svelte-icons";
+    import { useNuiEvent } from "../utils/NuiEvents";
+    import { fetchNui } from "../utils/FetchNui";
 
-    export let open: boolean = false;
-    export let description: string;
-    export let accept: string;
-    export let decline: string;
-    export let onAccept: Function;
-    export let onClose: Function;
+    let open: boolean = true;
+    let description: string = "This is a warning, would you like to continue?";
+    let accept: string = "Accept";
+    let decline: string = "Decline";
+    let other: any;
 
-    function handleClick(action: string) {
-        if (action === "accepted") {
-            onAccept();
-        }
-    }
+    useNuiEvent('open:warning', function(data: any){
+        open = data?.open || open
+        description = data?.description || description
+        accept = data?.accept || accept
+        decline = data?.decline || decline
+        other = data?.other
+    })
 
-    $: if (open === false) {
-        onClose();
+    function handleChoice(accepted: boolean) {
+        fetchNui('handle:choice', {
+            accepted: accepted,
+            other: other
+        })
+
+        console.log(accepted, other)
+        open = false;
     }
 </script>
 
@@ -24,7 +33,7 @@
     <div class="text-center">
         <ExclamationCircleOutline class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" />
         <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">{description}</h3>
-        <Button color="red" class="me-2" on:click={() => handleClick("accepted")}>{accept}</Button>
-        <Button color="alternative">{decline}</Button>
+        <Button color="red" class="me-2" on:click={() => handleChoice(true)}>{accept}</Button>
+        <Button color="alternative" on:click={() => handleChoice(false)}>{decline}</Button>
     </div>
 </Modal>
