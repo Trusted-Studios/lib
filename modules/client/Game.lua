@@ -36,15 +36,27 @@ end
 ---@param g number 
 ---@param b number | nil
 ---@param a number | nil
-function Game.AddAdvancedMarker(type, x, y, z, r, g, b, a)
+---@param rotX number | vector3 | nil
+---@param rotY number | nil
+---@param rotZ number | nil
+function Game.AddAdvancedMarker(type, x, y, z, r, g, b, a, rotX, rotY, rotZ)
+    if (type(x) ~= "vector3" or type(x) ~= "vector4") and type(rotX) == "vector3" then
+        rotX, rotY, rotZ in rotX
+    end
+
     if type(x) == "vector3" or type(x) == "vector4" then
+        if type(b) == "vector3" then
+            rotX, rotY, rotZ in b
+        else
+            rotX, rotY, rotZ = b, a, rotX
+        end
+
         r, g, b, a = y, z, r, g
         x, y, z = table.unpack(x)
     end
     ---@diagnostic disable-next-line: param-type-mismatch
-    DrawMarker(1, x, y, z - 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.6, 0.6, 0.5, r, g, b, a, false, true, 2, false, nil, nil, false)
+    DrawMarker(1, x, y, z - 1, 0.0, 0.0, 0.0, rotX, rotY, rotZ, 0.6, 0.6, 0.5, r, g, b, a, false, true, 2, false, nil, nil, false)
 end
-
 
 ---@param name string
 ---@param inVeh boolean
