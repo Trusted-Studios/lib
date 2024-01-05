@@ -28,34 +28,19 @@ function Game.AddMarker(x, y, z)
     DrawMarker(1, x, y, z - 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.6, 0.6, 0.5, 0, 191, 255, 100, false, true, 2, false, nil, nil, false)
 end
 
----@param type number
----@param x number | vector3
----@param y number
----@param z number
+---@param id number
+---@param coords vector4
 ---@param r number
----@param g number 
----@param b number | nil
----@param a number | nil
----@param rotX number | vector3 | nil
----@param rotY number | nil
----@param rotZ number | nil
-function Game.AddAdvancedMarker(id, x, y, z, r, g, b, a, rotX, rotY, rotZ)
-    if (type(x) ~= "vector3" or type(x) ~= "vector4") and type(rotX) == "vector3" then
-        rotX, rotY, rotZ in rotX
-    end
+---@param g number
+---@param b number
+---@param a number
+---@param rotation vector3
+function Game.AddAdvancedMarker(id, coords, r, g, b, a, rotation)
+    local x, y, z = table.unpack(coords)
+    local rotX, rotZ, rotY = type(rotation) == 'vector3' and table.unpack(rotation) or 0, 0, 0
 
-    if type(x) == "vector3" or type(x) == "vector4" then
-        if type(b) == "vector3" then
-            rotX, rotY, rotZ = table.unpack(b)
-        else
-            rotX, rotY, rotZ = b, a, rotX
-        end
-
-        r, g, b, a = y, z, r, g
-        x, y, z = table.unpack(x)
-    end
     ---@diagnostic disable-next-line: param-type-mismatch
-    DrawMarker(id, x, y, z - 1, 0.0, 0.0, 0.0, rotX or 0, rotY or 0, rotZ or 0, 0.6, 0.6, 0.5, r, g, b, a, false, true, 2, false, nil, nil, false)
+    DrawMarker(id, x, y, z - 1, 0.0, 0.0, 0.0, rotX, rotY, rotZ, 0.6, 0.6, 0.5, r, g, b, a, false, true, 2, false, nil, nil, false)
 end
 
 ---@param name string
@@ -192,10 +177,13 @@ end
 ---@param z number
 ---@return number
 function Game.SpawnObjectAtCoords(modelHash, x, y, z, h, isNetwork)
-    if type(x) == "vector3" then
+    if type(x) == "vector3" or type(x) == "vector4" then
         isNetwork = y
-        h = GetEntityCoords(PlayerPedId())
-        x, y, z in x
+        x, y, z, h = table.unpack(x)
+
+        if not h then
+            h = math.random(0, 360)
+        end
     end
 
     if type(x) == " vector4" then
@@ -269,7 +257,7 @@ end
 ---@param side string
 ---@param multiplier number
 ---@return table
-function Math.GetAdvancedSideFieldFromHeading(h, side, multiplier)
+function Game.GetAdvancedSideFieldFromHeading(h, side, multiplier)
     local add
     if side == 'left' then 
         add = 180.0

@@ -47,6 +47,22 @@ function Web:Close(component)
     self[component] = nil
 end
 
+function Web:DisableNUIEffects(component)
+    SetNuiFocus(false, false)
+    TriggerScreenblurFadeOut(0)
+
+    self[component] = nil
+end
+
 function Web:IsComponentOpen(component)
     return self[component]?.visible
 end
+
+RegisterNUICallback('close', function(data, cb)
+    SetNuiFocus(false, false)
+    TriggerScreenblurFadeOut(0)
+
+    Web[data.component] = nil
+
+    cb(true)
+end)

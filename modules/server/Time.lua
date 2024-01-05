@@ -25,5 +25,5 @@ end
 ---@param targetTime number
 ---@return boolean
 function Time.HasTargetTimeBeenReached(startTime, targetTime)
-    return os.time() / 60 >= startTime / 60 + targetTime / 60
+    return os.time() >= startTime + targetTime * 60
 end

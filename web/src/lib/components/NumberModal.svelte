@@ -3,6 +3,7 @@
     import { useNuiEvent } from "../utils/NuiEvents";
     import { fetchNui } from "../utils/FetchNui";
 
+    let wasOpen: boolean = false;
     let open: boolean = false;
     let description: string = "Choose a number.";
     let confirm: string = "Confirm";
@@ -14,7 +15,8 @@
     let other: any
 
     useNuiEvent('open:numberModal', function(data: any) {
-        open = data?.visible || open;
+        open = true;
+        wasOpen = true;
         description = data?.description || description,
         confirm = data?.confirm || confirm,
         rangeLabel = data?.rangeLabel || rangeLabel,
@@ -29,8 +31,17 @@
             count: value,
             other: other
         })
-        console.log(value, other)
         open = false
+        wasOpen = false
+    }
+
+    $: {
+        if (wasOpen && open == false) {
+            console.log('close')
+            fetchNui('close', {
+                component: "numberModal"
+            })
+        }
     }
 </script>
 

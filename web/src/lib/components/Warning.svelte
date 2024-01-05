@@ -4,14 +4,14 @@
     import { useNuiEvent } from "../utils/NuiEvents";
     import { fetchNui } from "../utils/FetchNui";
 
-    let open: boolean = true;
+    let open: boolean = false;
     let description: string = "This is a warning, would you like to continue?";
     let accept: string = "Accept";
     let decline: string = "Decline";
     let other: any;
 
     useNuiEvent('open:warning', function(data: any){
-        open = data?.open || open
+        open = true;
         description = data?.description || description
         accept = data?.accept || accept
         decline = data?.decline || decline
