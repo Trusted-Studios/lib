@@ -281,6 +281,18 @@ function Game.GetDistance(ped, targetCoords, distance)
     return dist <= distance
 end
 
+--- returns if a ped is near Water
+---@param ped? number
+function Game.IsNearWater(ped)
+    local ped <const> = ped or PlayerPedId()
+    
+    local heading = GetPedBoneCoords(ped, 31086, 0.0, 0.0, 0.0)
+    local offset = GetOffsetFromEntityInWorldCoords(ped, 0.0, 50.0, -25.0)
+    local water, coords = TestProbeAgainstAllWater(heading.x, heading.y, heading.z, offset.x, offset.y, offset.z)
+
+    return water, coords
+end
+
 Game.Location = {}
 
 ---@class Location
