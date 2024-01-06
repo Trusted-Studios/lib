@@ -362,7 +362,8 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                         self.functions.onEnter({
                             coords = self.coords,
                             firstDistance = self.firstDistance,
-                            secondDistance = self.secondDistance
+                            secondDistance = self.secondDistance,
+                            self = self
                         })
                     end
                 end
@@ -372,7 +373,8 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                         self.functions.inside({
                             coords = self.coords,
                             firstDistance = self.firstDistance,
-                            secondDistance = self.secondDistance
+                            secondDistance = self.secondDistance,
+                            self = self
                         })
                     end
                 end
@@ -384,7 +386,8 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                         self.functions.onExit({
                             coords = self.coords,
                             firstDistance = self.firstDistance,
-                            secondDistance = self.secondDistance
+                            secondDistance = self.secondDistance,
+                            self = self
                         })
                     end
                 end

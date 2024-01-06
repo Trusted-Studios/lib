@@ -21,6 +21,11 @@ function Callback:Register(eventName, callback)
 end
 
 RegisterNetEvent('Trusted:TriggerServerCallback', function(eventName, requestId, invoker, ...)
+
+    if not GetCurrentResourceName() == invoker and not string.find(eventName:lower(), 'global') then
+        return
+    end
+
     if not Callback.serverCallbacks[eventName] then
         return print(('[^1ERROR^7] Server Callback not registered, name: ^5%s^7, invoker resource: ^5%s^7'):format(eventName, invoker))
     end
