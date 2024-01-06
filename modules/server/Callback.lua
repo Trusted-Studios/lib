@@ -22,7 +22,7 @@ end
 
 RegisterNetEvent('Trusted:TriggerServerCallback', function(eventName, requestId, invoker, ...)
 
-    if not GetCurrentResourceName() == invoker and not string.find(eventName:lower(), 'global') then
+    if GetCurrentResourceName() ~= invoker and not string.find(eventName:lower(), 'global') then
         return
     end
 
