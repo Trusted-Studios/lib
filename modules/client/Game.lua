@@ -120,14 +120,19 @@ end
 ---@param BlipLabel string
 ---@param shortRange boolean
 ---@return number
-function Game.AddBlip(x, y, z, type, scale, colour, enableWaypoint, BlipLabel, shortRange)
+function Game.AddBlip(x, y, z, id, scale, color, enableWaypoint, BlipLabel, shortRange)
+    if type(x) == 'vector3' or type(x) == 'vector4' then
+        id, scale, color, enableWaypoint, BlipLabel, shortRange = y, z, id, scale, color, enableWaypoint
+        x, y, z = table.unpack(x)
+    end
+
     local blip = AddBlipForCoord(x, y, z)
-    SetBlipSprite(blip, type)
+    SetBlipSprite(blip, id)
     SetBlipScale(blip, scale)
-    SetBlipColour(blip, colour)
+    SetBlipColour(blip, color)
     SetBlipAsShortRange(blip, shortRange)
     SetBlipRoute(blip, enableWaypoint)
-    SetBlipRouteColour(blip, colour)
+    SetBlipRouteColour(blip, color)
     BeginTextCommandSetBlipName('STRING')
     AddTextComponentSubstringPlayerName(BlipLabel)
     EndTextCommandSetBlipName(blip)
