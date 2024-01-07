@@ -15,7 +15,9 @@ end
 -- Code
 -- ════════════════════════════════════════════════════════════════════════════════════ --
 
-Web = {}
+Web = {
+    components = {}
+}
 
 function Web:Open(component, bluredBackground, focus, ...)
     if bluredBackground then
@@ -31,7 +33,7 @@ function Web:Open(component, bluredBackground, focus, ...)
         data = ...
     })
 
-    self[component] = {
+    self.components[component] = {
         visible = true
     }
 end
@@ -44,25 +46,34 @@ function Web:Close(component)
     SetNuiFocus(false, false)
     TriggerScreenblurFadeOut(0)
 
-    self[component] = nil
+    self.components[component] = nil
 end
 
 function Web:DisableNUIEffects(component)
     SetNuiFocus(false, false)
     TriggerScreenblurFadeOut(0)
 
-    self[component] = nil
+    self.components[component] = nil
 end
 
 function Web:IsComponentOpen(component)
-    return self[component]?.visible
+    return self.components[component]?.visible
 end
 
 RegisterNUICallback('close', function(data, cb)
-    SetNuiFocus(false, false)
-    TriggerScreenblurFadeOut(0)
 
-    Web[data.component] = nil
+    -- Gibt gerade keinen anderen Weg.. #Web.components gibt immer nur 0 zurück.
+    local lenght = 0
+    for component, data in pairs(Web.components) do
+        lenght += 1
+    end
+
+    if lenght <= 1 then
+        SetNuiFocus(false, false)
+        TriggerScreenblurFadeOut(0)
+    end
+
+    Web.components[data.component] = nil
 
     cb(true)
 end)
