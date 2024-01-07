@@ -288,7 +288,7 @@ function Game.IsNearWater(ped)
     
     local heading = GetPedBoneCoords(ped, 31086, 0.0, 0.0, 0.0)
     local offset = GetOffsetFromEntityInWorldCoords(ped, 0.0, 50.0, -25.0)
-    local water, coords = TestProbeAgainstAllWater(heading.x, heading.y, heading.z, offset.x, offset.y, offset.z)
+    local water, coords = TestProbeAgainstWater(heading.x, heading.y, heading.z, offset.x, offset.y, offset.z)
 
     return water, coords
 end
