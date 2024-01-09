@@ -54,7 +54,7 @@
 {#if open}
     <div class="flex items-center justify-center">
         <Table divClass="mt-20 ml-8 mr-8 rounded-b-2xl">
-            <TableSearch placeholder="Search by maker name" hoverable={true} bind:inputValue={searchTerm}>
+            <TableSearch placeholder="Suchen" hoverable={true} bind:inputValue={searchTerm}>
                 <caption class="p-5 text-lg font-semibold text-left dark:text-white dark:bg-gray-800 rounded-t-xl">
                     {text?.header || "invalid"}
                     <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">{text?.description || "invalid"}.</p>
