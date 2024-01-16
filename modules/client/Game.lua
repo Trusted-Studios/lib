@@ -307,7 +307,8 @@ Game.Location = {}
 ---@param marker boolean | function
 ---@param functions table | nil
 ---@param condition function | nil
-function Game.Location.Create(coords, firstDistance, secondDistance, marker, functions, condition)
+---@param heavyOptimization boolean | nil (not recomended)
+function Game.Location.Create(coords, firstDistance, secondDistance, marker, functions, condition, heavyOptimization)
     local self = {
         coords = coords,
         firstDistance = firstDistance,
@@ -315,6 +316,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
         marker = marker,
         functions = functions,
         condition = condition,
+        heavyOptimization = heavyOptimization,
         isNearFirstCoord = false,
         isNearSecondCoord = false,
         isInside = false,
@@ -326,15 +328,14 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
 
     function self:isNearCoords(coord, distance)
         local playerCoords = GetEntityCoords(PlayerPedId())
-        ---@diagnostic disable-next-line: param-type-mismatch
-        return Vdist(playerCoords, table.unpack(coord)) <= distance
+        return #(playerCoords - table.unpack(coord)) <= distance
     end
 
     function self:start()
         CreateThread(function()
             if self.condition and type(self.condition) == "function" then
                 while true do
-                    Wait(250)
+                    Wait(self.heavyOptimization and 500 or 250)
                     self.returnedCondition = self.condition()
                 end
             end
@@ -344,7 +345,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
             while self.active do
                 self.isNearFirstCoord = self:isNearCoords(self.coords, self.firstDistance)
                 self.isNearSecondCoord = self:isNearCoords(self.coords, self.secondDistance)
-                Wait(500)
+                Wait(self.heavyOptimization and 800 or 500)
             end
         end)
 
@@ -359,7 +360,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                         self.marker()
                     end
                 else
-                    Wait(500)
+                    Wait(self.heavyOptimization and 800 or 500)
                 end
             end
         end)
@@ -369,7 +370,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                 Wait(0)
 
                 if not self.returnedCondition then
-                    Wait(500)
+                    Wait(self.heavyOptimization and 800 or 500)
                     goto continue
                 end
 
@@ -410,7 +411,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                 end
 
                 if not self.isNearSecondCoord then
-                    Wait(500)
+                    Wait(self.heavyOptimization and 800 or 500)
                     goto continue
                 end
 
