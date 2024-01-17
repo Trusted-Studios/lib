@@ -328,7 +328,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
 
     function self:isNearCoords(coord, distance)
         local playerCoords = GetEntityCoords(PlayerPedId())
-        return #(playerCoords - table.unpack(coord)) <= distance
+        return #(playerCoords - vec3(coord.x, coord.y, coord.z)) <= distance
     end
 
     function self:start()
