@@ -37,7 +37,7 @@ function Async.RaiseError(errorHandle)
 end
 
 ---@param func function 
----@return promise | nil 
+---@return promise | nil | any
 function Async.Await(func)
     if not func then 
         return
