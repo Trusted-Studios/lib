@@ -17,9 +17,11 @@ end
 ---@class Game
 Game = {}
 
----@param x number | vector3
+---@param x number | vector3 | vector4
 ---@param y number | nil
 ---@param z number | nil
+---@meta:
+--- Adds a simple GTA:O Marker to the world at the given coords.
 function Game.AddMarker(x, y, z)
     if type(x) == "vector3" or type(x) == "vector4" then
         x, y, z = table.unpack(x)
@@ -29,12 +31,14 @@ function Game.AddMarker(x, y, z)
 end
 
 ---@param id number
----@param coords vector4
+---@param coords vector3 | vector4
 ---@param r number
 ---@param g number
 ---@param b number
 ---@param a number
 ---@param rotation vector3
+---@meta:
+--- Adds a marker to the world at the given coords. Can be customized a bit more than Game.AddMarker.
 function Game.AddAdvancedMarker(id, coords, r, g, b, a, rotation)
     local x, y, z = table.unpack(coords)
     local rotX, rotZ, rotY = type(rotation) == 'vector3' and table.unpack(rotation) or 0, 0, 0
@@ -47,6 +51,8 @@ end
 ---@param inVeh boolean
 ---@param coords vector3 | vector4
 ---@return number
+---@meta:
+--- Creates a new vehicle and returns its entity id.
 function Game.SpawnVehicle(name, inVeh, coords)
     local ped = PlayerPedId()
     local model = GetHashKey(name)
@@ -71,9 +77,15 @@ function Game.SpawnVehicle(name, inVeh, coords)
     return newVehicle
 end
 
---- Useless..
 ---@param vehicle number
+---@meta:
+--- Checks if the passed entity is a vehicle and deletes it if true.
 function Game.DeleteVehicle(vehicle)
+    if not IsEntityAVehicle(vehicle) then
+        print "^1[Warning]^0 - Can't delete a non-vehicle entity. If you wanted to do so, proceed to use DeleteEntity(entity)"
+        return
+    end
+
     DeleteEntity(vehicle)
 end
 
@@ -84,7 +96,9 @@ end
 ---@param h number | nil
 ---@param freeze boolean | nil
 ---@param isNetwork boolean | nil
----@return number
+---@return number | nil
+---@meta:
+--- Spawns a new ped and returns its entity id.
 function Game.SpawnPed(ped, x, y, z, h, freeze, isNetwork)
     if type(x) == 'vector4' then 
         ---@diagnostic disable-next-line: cast-local-type
@@ -93,9 +107,19 @@ function Game.SpawnPed(ped, x, y, z, h, freeze, isNetwork)
     end
 
     local model = GetHashKey(ped)
-
     RequestModel(model)
-    repeat Wait(10) until HasModelLoaded(model)
+
+    local timeout = false
+    SetTimeout(1e4, function()
+        timeout = true
+    end)
+
+    repeat Wait(10) until HasModelLoaded(model) or timeout
+
+    if timeout then
+        print '^1[WARNING]^0 - Unable to load ped model!'
+        return
+    end
 
     ---@diagnostic disable-next-line: param-type-mismatch
     local newPed = CreatePed(-1, ped, x, y, z - 1, h, isNetwork or false, true)
@@ -110,23 +134,26 @@ function Game.SpawnPed(ped, x, y, z, h, freeze, isNetwork)
     return newPed
 end
 
----@param x number
+---@param x number | vec3 | vec4
 ---@param y number
 ---@param z number
----@param type number
+---@param id number
 ---@param scale number
----@param colour number
----@param enableWaypoint boolean
----@param BlipLabel string
----@param shortRange boolean
+---@param color number
+---@param enableWaypoint boolean | any
+---@param blipLabel string | any
+---@param shortRange boolean | any
 ---@return number
-function Game.AddBlip(x, y, z, id, scale, color, enableWaypoint, BlipLabel, shortRange)
+---@meta:
+--- Creates a new blip and returns its id.
+function Game.AddBlip(x, y, z, id, scale, color, enableWaypoint, blipLabel, shortRange)
     if type(x) == 'vector3' or type(x) == 'vector4' then
-        id, scale, color, enableWaypoint, BlipLabel, shortRange = y, z, id, scale, color, enableWaypoint
+        id, scale, color, enableWaypoint, blipLabel, shortRange = y, z, id, scale, color, enableWaypoint
         x, y, z = table.unpack(x)
     end
 
-    local blip = AddBlipForCoord(x, y, z)
+    ---@diagnostic disable-next-line: param-type-mismatch
+    local blip <const> = AddBlipForCoord(x, y, z)
     SetBlipSprite(blip, id)
     SetBlipScale(blip, scale)
     SetBlipColour(blip, color)
@@ -134,7 +161,7 @@ function Game.AddBlip(x, y, z, id, scale, color, enableWaypoint, BlipLabel, shor
     SetBlipRoute(blip, enableWaypoint)
     SetBlipRouteColour(blip, color)
     BeginTextCommandSetBlipName('STRING')
-    AddTextComponentSubstringPlayerName(BlipLabel)
+    AddTextComponentSubstringPlayerName(blipLabel)
     EndTextCommandSetBlipName(blip)
     return blip
 end
@@ -142,45 +169,36 @@ end
 ---@param x number
 ---@param y number
 ---@param z number
----@param type number
+---@param id number
 ---@param scale number
----@param colour number
+---@param color number
 ---@param enableWaypoint boolean
----@param BlipLabel string 
+---@param blipLabel string 
 ---@param shortRange boolean
 ---@return number
-function Game.AddRadiusBlip(x, y, z, type, scale, colour, enableWaypoint, BlipLabel, shortRange)
-    local blip = AddBlipForRadius(x, y, z, 0)
-    SetBlipSprite(blip, type)
+---@meta:
+--- Creates a new radius blip and returns its id.
+function Game.AddRadiusBlip(x, y, z, id, scale, color, enableWaypoint, blipLabel, shortRange)
+    local blip <const> = AddBlipForRadius(x, y, z, 0)
+    SetBlipSprite(blip, id)
     SetBlipScale(blip, scale)
-    SetBlipColour(blip, colour)
+    SetBlipColour(blip, color)
     SetBlipAsShortRange(blip, shortRange)
     SetBlipRoute(blip, enableWaypoint)
     SetBlipRouteColour(blip, colour)
     BeginTextCommandSetBlipName('STRING')
-    AddTextComponentSubstringPlayerName(BlipLabel)
+    AddTextComponentSubstringPlayerName(blipLabel)
     EndTextCommandSetBlipName(blip)
     return blip
-end
-
----@param ped number
----@param targetCoords vector3
----@param distance number
----@param reverse boolean
----@return boolean
-function Game.IsNearCoords(ped, targetCoords, distance, reverse)
-    local coords = GetEntityCoords(ped)
-    ---@diagnostic disable-next-line: param-type-mismatch, missing-parameter
-    local dist = Vdist(coords, targetCoords)
-
-    return reverse and (dist >= distance) or (dist <= distance)
 end
 
 ---@param modelHash number
 ---@param x number
 ---@param y number
 ---@param z number
----@return number
+---@return number | nil
+---@meta:
+--- Spawns a new object and returns it entity id.
 function Game.SpawnObjectAtCoords(modelHash, x, y, z, h, isNetwork)
     if type(x) == "vector3" or type(x) == "vector4" then
         isNetwork = y
@@ -197,11 +215,21 @@ function Game.SpawnObjectAtCoords(modelHash, x, y, z, h, isNetwork)
     end
 
     RequestModel(modelHash)
-    repeat Wait(10) until HasModelLoaded(modelHash)
+
+    local timeout = false
+    SetTimeout(1e4, function()
+        timeout = true
+    end)
+
+    repeat Wait(10) until HasModelLoaded(modelHash) or timeout
+
+    if timeout then
+        print '^1[WARNING]^0 - Unable to load ped model!'
+        return
+    end
 
     local object <const> = CreateObjectNoOffset(modelHash, x, y, z, isNetwork, false, true)
-
-    
+ 
     SetEntityHeading(object, h)
     PlaceObjectOnGroundProperly(object)
     FreezeEntityPosition(object, true)
@@ -213,17 +241,33 @@ end
 ---@param animDict string
 ---@param animName string
 ---@param flag number
+---@meta:
+--- Plays an animation to the player ped.
 function Game.PlayAnimation(animDict, animName, flag)
-    local ped = GetPlayerPed(-1)
+    local ped = PlayerPedId()
     ClearPedTasksImmediately(ped)
     RequestAnimDict(animDict)
-    repeat Wait(10) until HasAnimDictLoaded(animDict)
+
+
+    local timeout = false
+    SetTimeout(1e4, function()
+        timeout = true
+    end)
+
+    repeat Wait(10) until HasAnimDictLoaded(animDict) or timeout
+
+    if timeout then
+        print '^1[WARNING]^0 - Unable to load ped model!'
+        return
+    end
 
     TaskPlayAnim(ped, animDict, animName, 8.0, 8.0, -1, flag, 0, false, false, false)
 end
 
 ---@param entity number
 ---@return table
+---@meta:
+--- calculates the foward field of an entity.
 function Game.GetForwardField(entity)
     local hr = GetEntityHeading(entity) + 90.0
     if hr < 0.0 then hr = 360.0 + hr end
@@ -234,17 +278,22 @@ end
 ---@param entity number
 ---@param multiplier number
 ---@return table
+---@meta:
+---@deprecated
+--- Calculates the foward field of an entity and with an multiplier.
 function Game.GetAdvancedForwardField(entity, multiplier)
     local hr = GetEntityHeading(entity) + 90.0
     if hr < 0.0 then hr = 360.0 + hr end
     hr = hr * 0.0174533
     return { x = math.cos(hr) * multiplier, y = math.sin(hr) * multiplier }
-end 
+end
 
 ---@param entity number
 ---@param side string
 ---@param multiplier number
 ---@return table
+---@meta:
+--- Calculates the side field of an entity with an optional multiplier.
 function Game.GetAdvancedSideField(entity, side, multiplier)
     local add
     if side == 'left' then
@@ -262,6 +311,8 @@ end
 ---@param side string
 ---@param multiplier number
 ---@return table
+---@meta: 
+--- Calculates the side field based on a givin heading and returns it with an optional multiplier.
 function Game.GetAdvancedSideFieldFromHeading(h, side, multiplier)
     local add
     if side == 'left' then 
@@ -278,7 +329,24 @@ end
 ---@param ped number
 ---@param targetCoords vector3
 ---@param distance number
+---@param reverse boolean
 ---@return boolean
+---@meta:
+--- returns if the given ped is near the target coords based on the rquired distance. 
+function Game.IsNearCoords(ped, targetCoords, distance, reverse)
+    local coords = GetEntityCoords(ped)
+    ---@diagnostic disable-next-line: param-type-mismatch, missing-parameter
+    local dist = Vdist(coords, targetCoords)
+
+    return reverse and (dist >= distance) or (dist <= distance)
+end
+
+---@param ped number
+---@param targetCoords vector3
+---@param distance number
+---@return boolean
+---@deprecated
+--- DO NOT USE THIS FUNCTION
 function Game.GetDistance(ped, targetCoords, distance)
     local coords = GetEntityCoords(ped)
     ---@diagnostic disable-next-line: missing-parameter, param-type-mismatch
@@ -286,18 +354,24 @@ function Game.GetDistance(ped, targetCoords, distance)
     return dist <= distance
 end
 
---- returns if a ped is near Water
----@param ped? number
+---@param ped any
+---@return boolean, vector3
+---@meta:
+--- credits: https://github.com/wasabirobby/wasabi_fishing/blob/main/client/functions.lua
+--- Checks of the ped is near a water source.
 function Game.IsNearWater(ped)
+    ---@diagnostic disable-next-line: redefined-local
     local ped <const> = ped or PlayerPedId()
     
     local heading = GetPedBoneCoords(ped, 31086, 0.0, 0.0, 0.0)
     local offset = GetOffsetFromEntityInWorldCoords(ped, 0.0, 50.0, -25.0)
+    ---@diagnostic disable-next-line: undefined-field
     local water, coords = TestProbeAgainstWater(heading.x, heading.y, heading.z, offset.x, offset.y, offset.z)
 
     return water, coords
 end
 
+---@class Game.Location
 Game.Location = {}
 
 ---@class Location
@@ -307,7 +381,9 @@ Game.Location = {}
 ---@param marker boolean | function
 ---@param functions table | nil
 ---@param condition function | nil
----@param heavyOptimization boolean | nil (not recomended)
+---@param heavyOptimization boolean | nil
+---@return metatable
+---@meta: Creates a new location object.
 function Game.Location.Create(coords, firstDistance, secondDistance, marker, functions, condition, heavyOptimization)
     local self = {
         coords = coords,

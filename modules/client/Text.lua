@@ -28,8 +28,7 @@ Text = {}
 ---@param g number
 ---@param b number
 ---@param a number
----@param outline boolean
-function Text.DisplayText(x, y, width, height, scale, text, r, g, b, a, outline)
+function Text.DisplayText(x, y, width, height, scale, text, r, g, b, a)
     local x, y, width, height = (tonumber(x) or 0) / 1920, (tonumber(y) or 0) / 1080, (tonumber(width) or 0) / 1920, (tonumber(height) or 0) / 1080
     SetTextFont(4)
     SetTextProportional(false)

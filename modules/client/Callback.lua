@@ -12,6 +12,9 @@ print("^6[CLIENT - DEBUG] ^0: "..filename()..".lua gestartet");
 -- Code
 -- ════════════════════════════════════════════════════════════════════════════════════ --
 
+---@class Callback
+---@meta:
+--- credits: https://github.com/esx-framework/esx_core/blob/main/%5Bcore%5D/es_extended/client/modules/callback.lua
 Callback = {
     requestId = 0,
     serverRequests = {}
@@ -41,4 +44,3 @@ RegisterNetEvent('Trusted:RegisterServerCallback', function(requestId, invoker, 
     Callback.serverRequests[requestId](...)
     Callback.serverRequests[requestId] = nil
 end)
-

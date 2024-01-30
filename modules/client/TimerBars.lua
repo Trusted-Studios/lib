@@ -39,7 +39,6 @@ end
 ---@field Progress.fore_color.a number
 ---@field index number
 ---@field Rendering table
-
 Bars = {
     Textures = {dir = "timerbars", name = "all_black_bg"},
     Color = {r = 255, g = 255, b = 255, a = 155},
@@ -84,7 +83,9 @@ end
 --- Registers a new Timerbar with the specified index.
 ---@public
 ---@param index number
----@return table
+---@return metatable
+---@meta:
+--- Creates a new Bar object and returns its. 
 function Bars:init(index)
     local object = {}
     setmetatable(object, self)
@@ -94,19 +95,28 @@ function Bars:init(index)
     object.Rendering.background = {x = 1580, w = 320, h = 34}
     object.Rendering.progress = {x = 1700, w = 180, h = 12}
     object.Rendering.progress.isReady = false
-    if object.index == 1 then 
+    if object.index == 1 then
         object.Rendering.background.y = 1020
         object.Rendering.progress.y = 1031.5
     else 
         object.Rendering.background.y = 1020 - (40 * (object.index - 1))
         object.Rendering.progress.y = 1031.5 - (40 * (object.index - 1))
     end
+
+    object.exists = true
+
     return object
-end 
+end
 
 ---@public
 ---@param time number
 function Bars:ProgressBar(time)
+    ---@diagnostic disable-next-line: undefined-field
+    if not self.exists then
+        print '^1[WARNING]^0 - Unable to call this function as no parent object has been created.'
+        return
+    end
+
     self:Ready(false)
     local step = self.Rendering.progress.w / time
     local percent = 0
@@ -130,14 +140,26 @@ end
 
 --- Returns if the progressbar has finished.
 ---@public
----@return boolean
+---@return boolean | nil
 function Bars:IsReady()
+    ---@diagnostic disable-next-line: undefined-field
+    if not self.exists then
+        print '^1[WARNING]^0 - Unable to call this function as no parent object has been created.'
+        return
+    end
+
     return self.Rendering.progress.isReady
 end
 
 ---@public
 ---@param text string
 function Bars:TextBar(text)
+     ---@diagnostic disable-next-line: undefined-field
+     if not self.exists then
+        print '^1[WARNING]^0 - Unable to call this function as no parent object has been created.'
+        return
+    end
+
     self:Render()
     Text.MinimalTextDisplay(self.Rendering.progress.x, self.Rendering.progress.y - 14, 1.0, 1.0, 0.50, text, 255, 255, 255, 255, 0.98)
 end
@@ -146,6 +168,12 @@ end
 ---@param text_1 string
 ---@param text_2 string
 function Bars:InfoBar(text_1, text_2)
+     ---@diagnostic disable-next-line: undefined-field
+     if not self.exists then
+        print '^1[WARNING]^0 - Unable to call this function as no parent object has been created.'
+        return
+    end
+
     self:Render()
     Text.MinimalTextDisplay(self.Rendering.progress.x, self.Rendering.progress.y - 12, 1.0, 1.0, 0.50, text_1, 255, 255, 255, 255, 0.88)
     Text.MinimalTextDisplay(self.Rendering.progress.x, self.Rendering.progress.y - 16, 1.0, 1.0, 0.50, text_2, 255, 255, 255, 255, 0.98)
@@ -156,16 +184,28 @@ end
 ---@param time number
 ---@param type string
 function Bars:TimerBar(label, time, type)
+     ---@diagnostic disable-next-line: undefined-field
+     if not self.exists then
+        print '^1[WARNING]^0 - Unable to call this function as no parent object has been created.'
+        return
+    end
+
     self:Render()
     Text.MinimalTextDisplay(self.Rendering.progress.x, self.Rendering.progress.y - 12, 1.0, 1.0, 0.45, label, 255, 255, 255, 255, 0.88)
     Text.MinimalTextDisplay(self.Rendering.progress.x, self.Rendering.progress.y - 16, 1.0, 1.0, 0.60, tostring(time), 255, 255, 255, 255, 0.96)
-    Text.DisplayText(self.Rendering.progress.x + 145, self.Rendering.progress.y - 16, 1.0, 1.0, 0.60, type or "min.", 255, 255, 255, 255, false)
+    Text.DisplayText(self.Rendering.progress.x + 145, self.Rendering.progress.y - 16, 1.0, 1.0, 0.60, type or "min.", 255, 255, 255, 255)
 end
 
 ---@public
 ---@param label string
 ---@param percent number
 function Bars:PercentBar(label, percent)
+     ---@diagnostic disable-next-line: undefined-field
+     if not self.exists then
+        print '^1[WARNING]^0 - Unable to call this function as no parent object has been created.'
+        return
+    end
+
     self:Render()
     Text.MinimalTextDisplay(self.Rendering.progress.x, self.Rendering.progress.y - 12, 1.0, 1.0, 0.45, label, 255, 255, 255, 255, 0.88)
     self:RenderProgressBars(percent)
@@ -178,6 +218,12 @@ end
 ---@param g number
 ---@param b number
 function Bars:ColoredPercentBar(label, percent, r, g, b)
+     ---@diagnostic disable-next-line: undefined-field
+     if not self.exists then
+        print '^1[WARNING]^0 - Unable to call this function as no parent object has been created.'
+        return
+    end
+
     self:Render()
     if label then
         Text.MinimalTextDisplay(self.Rendering.progress.x, self.Rendering.progress.y - 12, 1.0, 1.0, 0.45, label, 255, 255, 255, 255, 0.88)

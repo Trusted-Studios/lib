@@ -1,5 +1,11 @@
 {
     "Lua.diagnostics.globals": [
-        "Trusted"
+        "Trusted",
+        "TriggerServerEvent",
+        "RegisterNetEvent"
+    ],
+    "Lua.diagnostics.disable": [
+        "undefined-global",
+        "undefined-doc-name",
     ]
 }

@@ -14,7 +14,8 @@ end
 -- Code
 -- ════════════════════════════════════════════════════════════════════════════════════ --
 
----@class Scaleform 
+---@class Scaleform
+--- credits: https://github.com/CritteRo/fivem-scaleform-lib
 local Scaleform <const> = {
     showMQ = false,
     showMI = false,
