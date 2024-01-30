@@ -16,6 +16,8 @@ Callback = {
     serverCallbacks = {}
 }
 
+---@param eventName string
+---@param callback function
 function Callback:Register(eventName, callback)
     self.serverCallbacks[eventName] = callback
 end

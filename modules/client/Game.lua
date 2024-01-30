@@ -267,7 +267,7 @@ end
 ---@param entity number
 ---@return table
 ---@meta:
---- calculates the foward field of an entity.
+--- Calculates the foward field of an entity.
 function Game.GetForwardField(entity)
     local hr = GetEntityHeading(entity) + 90.0
     if hr < 0.0 then hr = 360.0 + hr end
@@ -315,7 +315,7 @@ end
 --- Calculates the side field based on a givin heading and returns it with an optional multiplier.
 function Game.GetAdvancedSideFieldFromHeading(h, side, multiplier)
     local add
-    if side == 'left' then 
+    if side == 'left' then
         add = 180.0
     elseif side == 'right' then
         add = 0.0
@@ -332,7 +332,7 @@ end
 ---@param reverse boolean
 ---@return boolean
 ---@meta:
---- returns if the given ped is near the target coords based on the rquired distance. 
+--- Returns if the given ped is near the target coords based on the rquired distance. 
 function Game.IsNearCoords(ped, targetCoords, distance, reverse)
     local coords = GetEntityCoords(ped)
     ---@diagnostic disable-next-line: param-type-mismatch, missing-parameter
