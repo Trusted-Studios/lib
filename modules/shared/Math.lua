@@ -104,14 +104,19 @@ function Math.QuickSort(array, left, right)
 	end
 end
 
----@param t table
+---@param table table
 ---@return table
-function Math.Shuffle(t)
-    local s = {}
-    for i = 1, #t do s[i] = t[i] end
-    for i = #t, 2, -1 do
-        local j = math.random(i)
-        s[i], s[j] = s[j], s[i]
+function Math.Shuffle(table)
+    local shuffledTable = {}
+
+    for i = 1, #table do
+        shuffledTable[i] = table[i]
     end
-    return s
+
+    for i = #table, 2, -1 do
+        local randomIndex = math.random(i)
+        shuffledTable[i], shuffledTable[randomIndex] = shuffledTable[randomIndex], shuffledTable[i]
+    end
+
+    return shuffledTable
 end
