@@ -36,14 +36,40 @@ function Math.Round(int)
     return int >= 0 and math.floor(int + 0.5) or math.ceil(int - 0.5)
 end
 
----@param h number
----@param multiplier number
----@return table
-function Math.GetForwardFieldWithHeading(h, multiplier)
-    local hr = h + 90.0
-    if hr < 0.0 then hr = 360.0 + hr end
-    hr = hr * 0.0174533
-    return { x = math.cos(hr) * (multiplier or 1.0), y = math.sin(hr) * 1.0 }
+---@param coords vector3 | vector4
+---@param forwardMultiplier number
+---@param angleMultiplier number
+---@return vector3 | vector4
+function Math.GetForwardFromCoords(coords, forwardMultiplier, angleMultiplier)
+    local x, y, z, h
+    if type(coords) == 'vector3' then
+        ---@diagnostic disable-next-line: undefined-field
+        x, y, z in coords
+        h = GetEntityHeading(PlayerPedId())
+    end
+
+    if type(coords) == 'vector4' then
+        x, y, z, h = table.unpack(coords)
+    end
+
+    if not x and not y and not z and not h then
+        print '^1[WARNING]^0 - Unable to unpack given coords.'
+        return coords
+    end
+
+    if angleMultiplier then
+        h += angleMultiplier
+    end
+
+    local headingRightOffset = h + 90.0
+
+    if headingRightOffset < 0.0 then
+        headingRightOffset += 360.0
+    end
+
+    local angle <const> = headingRightOffset * math.pi
+
+    return coords + vec2(math.cos(angle) * (forwardMultiplier or 1), math.sin(angle) * (forwardMultiplier or 1))
 end
 
 ---@param array table
