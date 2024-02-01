@@ -28,6 +28,8 @@ Text = {}
 ---@param g number
 ---@param b number
 ---@param a number
+---@meta:
+--- Renders basic text on the screen.
 function Text.DisplayText(x, y, width, height, scale, text, r, g, b, a)
     local x, y, width, height = (tonumber(x) or 0) / 1920, (tonumber(y) or 0) / 1080, (tonumber(width) or 0) / 1920, (tonumber(height) or 0) / 1080
     SetTextFont(4)
@@ -53,12 +55,13 @@ end
 ---@param b number
 ---@param a number
 ---@param textWrap number
+---@meta:
+--- Renders basic text on the screen with a set text wrap.
 function Text.MinimalTextDisplay(x, y, width, height, scale, text, r, g, b, a, textWrap)
     local x, y, width, height = (tonumber(x) or 0) / 1920, (tonumber(y) or 0) / 1080, (tonumber(width) or 0) / 1920, (tonumber(height) or 0) / 1080
     SetTextFont(4)
     SetTextScale(scale, scale)
     SetTextColour(r, g, b, a)
-    SetTextDropShadow()
     SetTextDropShadow()
     SetTextEntry("STRING")
     SetTextWrap(0.0, textWrap)
