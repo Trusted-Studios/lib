@@ -44,7 +44,7 @@ function Math.GetForwardFromCoords(coords, forwardMultiplier, angleMultiplier)
     local x, y, z, h
     if type(coords) == 'vector3' then
         ---@diagnostic disable-next-line: undefined-field
-        x, y, z in coords
+        x, y, z = table.unpack(coords)
         h = GetEntityHeading(PlayerPedId())
     end
 

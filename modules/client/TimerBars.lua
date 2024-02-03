@@ -59,9 +59,9 @@ end
 
 ---@private
 ---@param percent number
-function Bars:RenderProgressBars(percent)
+function Bars:RenderProgressBar(percent)
     Visual.DrawProgressBar(self.Rendering.progress.x, self.Rendering.progress.y, self.Rendering.progress.w, self.Rendering.progress.h, self.Progress.back_color.r, self.Progress.back_color.g, self.Progress.back_color.b, self.Progress.back_color.a)
-    Visual.DrawProgressBar(self.Rendering.progress.x, self.Rendering.progress.y, percent, self.Rendering.progress.h, self.Progress.fore_color.r, self.Progress.fore_color.g, self.Progress.fore_color.b, self.Progress.fore_color.a)
+    Visual.DrawProgressBar(self.Rendering.progress.x, self.Rendering.progress.y, (180 / 100) * percent, self.Rendering.progress.h, self.Progress.fore_color.r, self.Progress.fore_color.g, self.Progress.fore_color.b, self.Progress.fore_color.a)
 end
 
 ---@private
@@ -118,24 +118,33 @@ function Bars:ProgressBar(time)
     end
 
     self:Ready(false)
-    local step = self.Rendering.progress.w / time
+    local step <const> = (self.Rendering.progress.w / time) / 100
     local percent = 0
-    if time ~= nil or time == 0 then
-        CreateThread(function()
-            while percent < 100 do
-                Wait(0)
-                self:Render()
-                self:RenderProgressBars(percent)
-            end
-        end)
-        CreateThread(function()
-            while percent < 100 do
-                Wait(0)
-                percent = percent + (step / 30)
-            end
-            self:Ready(true)
-        end)
-    end
+    local elapsedTime = 0
+
+    CreateThread(function()
+        while elapsedTime ~= time do
+            Wait(1000)
+            elapsedTime += 1
+        end
+
+        self:Ready(true)
+    end)
+    
+    CreateThread(function()
+        while percent <= 100 do
+            Wait(10)
+            percent += step
+        end
+    end)
+
+    CreateThread(function()
+        while not self:IsReady() do
+            Wait(0)
+            self:Render()
+            self:RenderProgressBar(percent)
+        end
+    end)
 end
 
 ---@public
@@ -213,7 +222,7 @@ function Bars:PercentBar(label, percent)
 
     self:Render()
     Text.MinimalTextDisplay(self.Rendering.progress.x, self.Rendering.progress.y - 12, 1.0, 1.0, 0.45, label, 255, 255, 255, 255, 0.88)
-    self:RenderProgressBars(percent)
+    self:RenderProgressBar(percent)
 end
 
 ---@public
