@@ -196,10 +196,13 @@ end
 ---@param x number
 ---@param y number
 ---@param z number
+---@param h number
+---@param isNetwork boolean
+---@param freeze boolean
 ---@return number | nil
 ---@meta:
 --- Spawns a new object and returns it entity id.
-function Game.SpawnObjectAtCoords(modelHash, x, y, z, h, isNetwork)
+function Game.SpawnObjectAtCoords(modelHash, x, y, z, h, isNetwork, freeze)
     if type(x) == "vector3" or type(x) == "vector4" then
         isNetwork = y
         x, y, z, h = table.unpack(x)
@@ -232,7 +235,7 @@ function Game.SpawnObjectAtCoords(modelHash, x, y, z, h, isNetwork)
  
     SetEntityHeading(object, h)
     PlaceObjectOnGroundProperly(object)
-    FreezeEntityPosition(object, true)
+    FreezeEntityPosition(object, freeze)
     SetModelAsNoLongerNeeded(modelHash)
 
     return object
