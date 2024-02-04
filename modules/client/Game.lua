@@ -185,7 +185,7 @@ function Game.AddRadiusBlip(x, y, z, id, scale, color, enableWaypoint, blipLabel
     SetBlipColour(blip, color)
     SetBlipAsShortRange(blip, shortRange)
     SetBlipRoute(blip, enableWaypoint)
-    SetBlipRouteColour(blip, colour)
+    SetBlipRouteColour(blip, color)
     BeginTextCommandSetBlipName('STRING')
     AddTextComponentSubstringPlayerName(blipLabel)
     EndTextCommandSetBlipName(blip)
