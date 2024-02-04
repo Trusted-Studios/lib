@@ -36,18 +36,12 @@ function Math.Round(int)
     return int >= 0 and math.floor(int + 0.5) or math.ceil(int - 0.5)
 end
 
----@param coords vector3 | vector4
+---@param coords vector4
 ---@param forwardMultiplier number
----@param angleMultiplier number
+---@param angleMultiplier? number
 ---@return vector3 | vector4
 function Math.GetForwardFromCoords(coords, forwardMultiplier, angleMultiplier)
     local x, y, z, h
-    if type(coords) == 'vector3' then
-        ---@diagnostic disable-next-line: undefined-field
-        x, y, z = table.unpack(coords)
-        h = GetEntityHeading(PlayerPedId())
-    end
-
     if type(coords) == 'vector4' then
         x, y, z, h = table.unpack(coords)
     end
@@ -57,19 +51,15 @@ function Math.GetForwardFromCoords(coords, forwardMultiplier, angleMultiplier)
         return coords
     end
 
-    if angleMultiplier then
-        h += angleMultiplier
-    end
-
-    local headingRightOffset = h + 90.0
+    local headingRightOffset = h + (angleMultiplier or 90.0)
 
     if headingRightOffset < 0.0 then
         headingRightOffset += 360.0
     end
 
-    local angle <const> = headingRightOffset * math.pi
+    local angle <const> = headingRightOffset * 0.0174533
 
-    return coords + vec2(math.cos(angle) * (forwardMultiplier or 1), math.sin(angle) * (forwardMultiplier or 1))
+    return coords + vec4(math.cos(angle) * (forwardMultiplier or 1), math.sin(angle) * (forwardMultiplier or 1), 0, 0)
 end
 
 ---@param array table

@@ -198,7 +198,7 @@ end
 ---@param z number
 ---@param h number
 ---@param isNetwork boolean
----@param freeze boolean
+---@param freeze? boolean
 ---@return number | nil
 ---@meta:
 --- Spawns a new object and returns it entity id.
