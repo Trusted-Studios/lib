@@ -25,7 +25,10 @@
         }
 
         open = false;
-        fetchNui('itemSelected', Items[index]);
+        fetchNui('itemSelected', {
+            items: Items[index],
+            other: other
+        });
     }
 </script>
 
