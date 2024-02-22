@@ -2,7 +2,7 @@
     "Lua.diagnostics.globals": [
         "Trusted",
         "TriggerServerEvent",
-        "RegisterNetEvent"
+        "RegisterNetEvent",
     ],
     "Lua.diagnostics.disable": [
         "undefined-global",
