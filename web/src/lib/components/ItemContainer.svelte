@@ -56,18 +56,20 @@
                                 <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 leading-tight">{Item.description}</p>
                             {/if}
                         </Card>
-                        <Popover class="transition ease-in-out delay-150 w-full sm:w-[12rem] text-sm font-light" title="Popover title" triggeredBy="#{Item.id}" defaultClass="py-5 px-6" placement={'bottom'}>
-                            {#if Item?.list}
-                                <div class="left-0">
-                                    {#each Object.values(Item?.list) as listItem}
-                                        <li>{listItem}</li>
-                                    {/each}
-                                </div>
-                            {:else}
-                                {Item.description || "No description"}
-                            {/if}
-                            <Button class="w-full sm:max-w-[12rem] mt-4" on:click={() => selectItem(index)}>Auswählen</Button>
-                        </Popover>
+                        <div class="mt-[12rem">
+                            <Popover class="transition ease-in-out delay-150 w-full sm:w-[12rem] text-sm font-light" title="Popover title" triggeredBy="#{Item.id}" defaultClass="py-5 px-6" placement={'bottom'}>
+                                {#if Item?.list}
+                                    <div class="left-0">
+                                        {#each Object.values(Item?.list) as listItem}
+                                            <li>{listItem}</li>
+                                        {/each}
+                                    </div>
+                                {:else}
+                                    {Item.description || "No description"}
+                                {/if}
+                                <Button class="w-full sm:max-w-[12rem] mt-4" on:click={() => selectItem(index)}>Auswählen</Button>
+                            </Popover>
+                        </div>
                     </div>
                 {/each}
                 </div>
