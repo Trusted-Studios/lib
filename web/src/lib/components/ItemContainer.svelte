@@ -13,7 +13,7 @@
     ];
     let other: any;
 
-    useNuiEvent('open:numberModal', function(data: any) {
+    useNuiEvent('open:itemContainer', function(data: any) {
         open = true;
         Items = data?.items || Items;
         other = data?.other || other;
@@ -44,9 +44,11 @@
                         </Card>
                         <Popover class="transition ease-in-out delay-150 w-[12rem] text-sm font-light" title="Popover title" triggeredBy="#{Item.id}" defaultClass="py-5 px-6">
                             {#if Item?.list}
-                                {#each Object.values(Item?.list) as listItem}
-                                    <li>{listItem}</li>
-                                {/each}
+                                <div class="left-0">
+                                    {#each Object.values(Item?.list) as listItem}
+                                        <li>{listItem}</li>
+                                    {/each}
+                                </div>
                             {:else}
                                 {Item.description || "No description"}
                             {/if}
