@@ -4,7 +4,7 @@
     import { useNuiEvent } from "$utils/NuiEvents";
     import { Button, Card, Popover } from "flowbite-svelte";
 
-    let open: boolean = true;
+    let open: boolean = false;
     let Items: ItemCards = [
         {
             id: 'bread',
@@ -51,7 +51,7 @@
                                 <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 leading-tight">{Item.description}</p>
                             {/if}
                         </Card>
-                        <Popover class="transition ease-in-out delay-150 w-full sm:w-[12rem] text-sm font-light" title="Popover title" triggeredBy="#{Item.id}" defaultClass="py-5 px-6">
+                        <Popover class="transition ease-in-out delay-150 w-full sm:w-[12rem] text-sm font-light" title="Popover title" triggeredBy="#{Item.id}" defaultClass="py-5 px-6" placement={'bottom'}>
                             {#if Item?.list}
                                 <div class="left-0">
                                     {#each Object.values(Item?.list) as listItem}
