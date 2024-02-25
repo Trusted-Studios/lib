@@ -4,15 +4,22 @@
     import { useNuiEvent } from "$utils/NuiEvents";
     import { Button, Card, Popover } from "flowbite-svelte";
 
-    let open: boolean = false;
-    let Items: ItemCards = [];
+    let open: boolean = true;
+    let Items: ItemCards = [
+        {
+            id: 'bread',
+            title: 'Item1',
+            list: ['Item1', 'Item2', 'Item3'],
+        }
+    ];
     let other: any;
 
     useNuiEvent('open:itemContainer', function(data: any) {
-        console.log(data)
         open = true;
         Items = data?.items || Items;
         other = data?.other || other;
+
+        console.log(Items)
     });
 
     function selectItem(index: number): void {
@@ -36,7 +43,9 @@
                     <div>
                         <Card img={Item?.image || ""} id="{Item.id}" class="hover:cursor-pointer" size="xs">
                             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{Item.title}</h5>
-                            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 leading-tight">{Item.description}</p>
+                            {#if Item.description}
+                                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 leading-tight">{Item.description}</p>
+                            {/if}
                         </Card>
                         <Popover class="transition ease-in-out delay-150 w-[12rem] text-sm font-light" title="Popover title" triggeredBy="#{Item.id}" defaultClass="py-5 px-6">
                             {#if Item?.list}
