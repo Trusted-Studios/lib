@@ -5,12 +5,7 @@
     import { Button, Card, Popover } from "flowbite-svelte";
 
     let open: boolean = false;
-    let Items: ItemCards = [
-        {
-            id: "item-1",
-            title: "Item 1",
-        },
-    ];
+    let Items: ItemCards = [];
     let other: any;
 
     useNuiEvent('open:itemContainer', function(data: any) {
@@ -25,8 +20,8 @@
         }
 
         open = false;
-        fetchNui('itemSelected', {
-            items: Items[index],
+        fetchNui('handle:itemContainer', {
+            item: Items[index],
             other: other
         });
     }
