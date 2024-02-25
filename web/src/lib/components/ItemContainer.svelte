@@ -33,12 +33,16 @@
             other: other
         });
     }
+
+    // Reactive statements
+    $: console.log(Items);
+    $: console.log(other);
 </script>
 
 {#if open}
     <center class="mt-[8rem]">
         <Card class="min-w-[64rem] max-h-[48rem] overflow-auto">
-            <div class="grid grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {#each Items as Item, index}
                     <div>
                         <Card img={Item?.image || ""} id="{Item.id}" class="hover:cursor-pointer" size="xs">
@@ -47,7 +51,7 @@
                                 <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 leading-tight">{Item.description}</p>
                             {/if}
                         </Card>
-                        <Popover class="transition ease-in-out delay-150 w-[12rem] text-sm font-light" title="Popover title" triggeredBy="#{Item.id}" defaultClass="py-5 px-6">
+                        <Popover class="transition ease-in-out delay-150 w-full sm:w-[12rem] text-sm font-light" title="Popover title" triggeredBy="#{Item.id}" defaultClass="py-5 px-6">
                             {#if Item?.list}
                                 <div class="left-0">
                                     {#each Object.values(Item?.list) as listItem}
@@ -57,7 +61,7 @@
                             {:else}
                                 {Item.description || "No description"}
                             {/if}
-                            <Button class="max-w-[12rem] mt-4" on:click={() => selectItem(index)}>Auswählen</Button>
+                            <Button class="w-full sm:max-w-[12rem] mt-4" on:click={() => selectItem(index)}>Auswählen</Button>
                         </Popover>
                     </div>
                 {/each}
