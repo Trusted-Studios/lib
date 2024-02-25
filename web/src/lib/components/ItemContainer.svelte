@@ -18,8 +18,6 @@
         open = true;
         Items = data?.items || Items;
         other = data?.other || other;
-
-        console.log(Items)
     });
 
     function selectItem(index: number): void {
@@ -33,11 +31,18 @@
             other: other
         });
     }
-
-    // Reactive statements
-    $: console.log(Items);
-    $: console.log(other);
+    
+    function closeTable(e: any) {
+        if (!open) return;
+        
+        if (e.keyCode == 27) {
+            open = false;
+            fetchNui("close:itemContainer");
+        }
+    }
 </script>
+
+<svelte:window on:keydown={closeTable} />
 
 {#if open}
     <center class="mt-[8rem]">
