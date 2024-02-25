@@ -9,6 +9,7 @@
     let other: any;
 
     useNuiEvent('open:itemContainer', function(data: any) {
+        console.log(data)
         open = true;
         Items = data?.items || Items;
         other = data?.other || other;
