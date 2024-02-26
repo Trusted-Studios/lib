@@ -5,13 +5,7 @@
     import { Button, Card, Popover } from "flowbite-svelte";
 
     let open: boolean = false;
-    let Items: ItemCards = [
-        {
-            id: 'bread',
-            title: 'Item1',
-            list: ['Item1', 'Item2', 'Item3'],
-        }
-    ];
+    let Items: ItemCards = [];
     let other: any;
 
     useNuiEvent('open:itemContainer', function(data: any) {
@@ -56,20 +50,18 @@
                                 <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 leading-tight">{Item.description}</p>
                             {/if}
                         </Card>
-                        <div class="mt-[12rem">
-                            <Popover class="transition ease-in-out delay-150 w-full sm:w-[12rem] text-sm font-light" title="Popover title" triggeredBy="#{Item.id}" defaultClass="py-5 px-6" placement={'bottom'}>
-                                {#if Item?.list}
-                                    <div class="left-0">
-                                        {#each Object.values(Item?.list) as listItem}
-                                            <li>{listItem}</li>
-                                        {/each}
-                                    </div>
-                                {:else}
-                                    {Item.description || "No description"}
-                                {/if}
-                                <Button class="w-full sm:max-w-[12rem] mt-4" on:click={() => selectItem(index)}>Auswählen</Button>
-                            </Popover>
-                        </div>
+                        <Popover class="transition ease-in-out delay-150 w-full sm:w-[12rem] text-sm font-light" title="Popover title" triggeredBy="#{Item.id}">
+                            {#if Item?.list}
+                                <div class="left-0">
+                                    {#each Object.values(Item?.list) as listItem}
+                                        <li>{listItem}</li>
+                                    {/each}
+                                </div>
+                            {:else}
+                                {Item.description || "No description"}
+                            {/if}
+                            <Button class="w-full sm:max-w-[12rem] mt-4" on:click={() => selectItem(index)}>Auswählen</Button>
+                        </Popover>
                     </div>
                 {/each}
                 </div>
