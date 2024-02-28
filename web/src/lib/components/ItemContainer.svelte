@@ -5,7 +5,14 @@
     import { Button, Card, Popover } from "flowbite-svelte";
 
     let open: boolean = false;
-    let Items: ItemCards = [];
+    let Items: ItemCards = [
+        // {
+        //     title: "Item",
+        //     id: "1",
+        //     image: "images/test.png",
+        //     list: ["List item 1", "List item 2"]
+        // }
+    ];
     let other: any;
 
     useNuiEvent('open:itemContainer', function(data: any) {
@@ -44,13 +51,13 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {#each Items as Item, index}
                     <div>
-                        <Card img={Item?.image || ""} id="{Item.id}" class="hover:cursor-pointer" size="xs">
+                        <Card img={Item?.image || ""} id="item-{index}" class="hover:cursor-pointer" size="xs">
                             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{Item.title}</h5>
                             {#if Item.description}
                                 <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 leading-tight">{Item.description}</p>
                             {/if}
                         </Card>
-                        <Popover class="transition ease-in-out delay-150 w-full sm:w-[12rem] text-sm font-light" title="Popover title" triggeredBy="#{Item.id}">
+                        <Popover class="w-full sm:w-[12rem] text-sm font-light mt-32" title="Popover title" triggeredBy="#item-{index}" placement="bottom">
                             {#if Item?.list}
                                 <div class="left-0">
                                     {#each Object.values(Item?.list) as listItem}
