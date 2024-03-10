@@ -414,7 +414,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
         CreateThread(function()
             if self.condition and type(self.condition) == "function" then
                 while true do
-                    Wait(self.heavyOptimization and 500 or 250)
+                    Wait(self.heavyOptimization and 1000 or 250)
                     self.returnedCondition = self.condition()
                 end
             end
@@ -424,7 +424,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
             while self.active do
                 self.isNearFirstCoord = self:isNearCoords(self.coords, self.firstDistance)
                 self.isNearSecondCoord = self:isNearCoords(self.coords, self.secondDistance)
-                Wait(self.heavyOptimization and 800 or 500)
+                Wait(self.heavyOptimization and 1500 or 500)
             end
         end)
 
@@ -439,7 +439,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                         self.marker()
                     end
                 else
-                    Wait(self.heavyOptimization and 800 or 500)
+                    Wait(self.heavyOptimization and 1500 or 500)
                 end
             end
         end)
@@ -449,7 +449,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                 Wait(0)
 
                 if not self.returnedCondition then
-                    Wait(self.heavyOptimization and 800 or 500)
+                    Wait(self.heavyOptimization and 1500 or 500)
                     goto continue
                 end
 
@@ -490,7 +490,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                 end
 
                 if not self.isNearSecondCoord then
-                    Wait(self.heavyOptimization and 800 or 500)
+                    Wait(self.heavyOptimization and 1000 or 500)
                     goto continue
                 end
 
