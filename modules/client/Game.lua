@@ -114,7 +114,7 @@ function Game.SpawnPed(ped, x, y, z, h, freeze, isNetwork)
         timeout = true
     end)
 
-    repeat Wait(10) until HasModelLoaded(model) or timeout
+    repeat Wait(10) RequestModel(model) until HasModelLoaded(model) or timeout
 
     if timeout then
         print '^1[WARNING]^0 - Unable to load ped model!'
