@@ -42,8 +42,6 @@
     }
 
     function closeTable(e: any) {
-        if (!open) return;
-        
         if (e.keyCode == 27) {
             open = false;
             fetchNui("table:close");
