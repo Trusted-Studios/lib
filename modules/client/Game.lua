@@ -90,7 +90,7 @@ function Game.DeleteVehicle(vehicle)
 end
 
 ---@param ped string
----@param x number
+---@param x number | vector4
 ---@param y number | boolean
 ---@param z number | boolean
 ---@param h number | nil
@@ -399,6 +399,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
         isNearFirstCoord = false,
         isNearSecondCoord = false,
         isInside = false,
+        approaching = false,
         returnedCondition = true,
         active = true
     }
@@ -453,9 +454,36 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                     goto continue
                 end
 
+                ---@onApproaching
+                if self.isNearFirstCoord and not self.isNearSecondCoord and not self.approaching then
+                    self.approaching = true
+                    if self.functions?.onApproaching then
+                        self.functions.onApproaching({
+                            coords = self.coords,
+                            firstDistance = self.firstDistance,
+                            secondDistance = self.secondDistance,
+                            self = self
+                        })
+                    end
+                end
+
+                ---@onLeaving
+                if self.approaching and not self.isNearFirstCoord then
+                    self.approaching = false
+                    if self.functions?.onLeaving then
+                        self.functions.onLeaving({
+                            coords = self.coords,
+                            firstDistance = self.firstDistance,
+                            secondDistance = self.secondDistance,
+                            self = self
+                        })
+                    end
+                end
+
+                ---@onEnter
                 if not self.isInside and self.isNearSecondCoord then
                     self.isInside = true
-                    if self.functions and self.functions.onEnter then
+                    if self.functions?.onEnter then
                         self.functions.onEnter({
                             coords = self.coords,
                             firstDistance = self.firstDistance,
@@ -465,8 +493,9 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                     end
                 end
 
+                ---@inside
                 if self.isInside then
-                    if self.functions and self.functions.inside then
+                    if self.functions?.inside then
                         self.functions.inside({
                             coords = self.coords,
                             firstDistance = self.firstDistance,
@@ -476,10 +505,11 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                     end
                 end
 
+                ---@onExit
                 if self.isInside and not self.isNearSecondCoord then
                     self.isInside = false
 
-                    if self.functions and self.functions.onExit then
+                    if self.functions?.onExit then
                         self.functions.onExit({
                             coords = self.coords,
                             firstDistance = self.firstDistance,
