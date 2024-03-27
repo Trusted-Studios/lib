@@ -38,6 +38,13 @@ function Web:Open(component, bluredBackground, focus, ...)
     }
 end
 
+function Web:Trigger(component, ...)
+    SendNUIMessage({
+        action = 'trigger:'..component,
+        data = ...
+    })
+end
+
 function Web:Close(component)
     SendNUIMessage({
         action = 'close:'..component
