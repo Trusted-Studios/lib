@@ -45,6 +45,10 @@ function Web.Table:HandleSelection(func)
     func(item, index, misc)
 end
 
+function Web.Table:Close()
+    Web:Close('table')
+end
+
 RegisterNuiCallback('close:table', function(data, cb)
     Web:Close('table')
     cb(true)

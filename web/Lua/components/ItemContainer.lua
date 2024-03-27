@@ -20,11 +20,7 @@ Web.ItemContainer = {}
 ---@field [string] string | number
 
 ---@class RawContainerItem
----@field id string
----@field label string
----@field image string
----@field list ContainerListItem[]
----@field description string
+---@field [string|number] {label: string, image: string?, list: ContainerListItem[]?, description: string?}
 
 ---@class ContainerItem
 ---@field id string
