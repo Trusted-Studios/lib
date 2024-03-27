@@ -38,9 +38,7 @@
     $: {
         if (wasOpen && open == false) {
             console.log('close')
-            fetchNui('close', {
-                component: "numberModal"
-            })
+            fetchNui('close:numberModal')
         }
     }
 </script>
