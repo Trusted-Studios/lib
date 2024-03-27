@@ -4,7 +4,7 @@
     import { useNuiEvent } from "$utils/NuiEvents";
     import { Button, Card, Popover } from "flowbite-svelte";
 
-    let open: boolean = true;
+    let open: boolean = false;
     let Items: ItemCards = [
         // {
         //     title: "Item",
