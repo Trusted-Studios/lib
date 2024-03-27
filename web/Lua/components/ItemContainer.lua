@@ -40,7 +40,12 @@ function Web.ItemContainer:Open(data, ...)
         newItem.id = item
         newItem.title = _data.label
         newItem.image = _data.image
-        newItem.list = self:CreateStringListFromTable(_data.required)
+        if _data.required then
+            newItem.list = self:CreateStringListFromTable(_data.required)
+        end
+        if _data.description then
+            newItem.description = _data.description
+        end
 
         table.insert(ContainerItems, newItem)
     end
@@ -74,11 +79,23 @@ end
 function Web.ItemContainer:HandleSelection(func)
     ---@type ContainerItem, any
     local item, misc = Async.Await(function(promise)
-        RegisterNuiCallback('handle:itemContainer', function(data, cb)
+        RegisterNUICallback('handle:itemContainer', function(data, cb)
             promise:resolve(data.item, data.other)
             cb(true)
         end)
+
+        RegisterNUICallback('close:itemContainer', function(data, cb)
+            Web:Close('itemContainer')
+            promise:resolve('closed')        
+            cb(true)
+        end)
     end)
+
+    if item == 'closed' then
+        return
+    end
+
+    Web:DisableNUIEffects('itemContainer')
 
     if type(func) ~= "function" then
         error('Function expected, got '..type(func)..' instead.')
