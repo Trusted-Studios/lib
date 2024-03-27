@@ -134,7 +134,7 @@ function Game.SpawnPed(ped, x, y, z, h, freeze, isNetwork)
     return newPed
 end
 
----@param x number | vec3 | vec4
+---@param x number | vector3 | vector4
 ---@param y number
 ---@param z number
 ---@param id number
@@ -194,17 +194,17 @@ end
 
 ---@param modelHash number
 ---@param x number
----@param y number
----@param z number
----@param h number
----@param isNetwork boolean
----@param freeze? boolean
+---@param y number | boolean
+---@param z number | boolean
+---@param h number | nil
+---@param isNetwork boolean | nil
+---@param freeze? boolean | nil
 ---@return number | nil
 ---@meta:
 --- Spawns a new object and returns it entity id.
 function Game.SpawnObjectAtCoords(modelHash, x, y, z, h, isNetwork, freeze)
     if type(x) == "vector3" or type(x) == "vector4" then
-        isNetwork = y
+        isNetwork = y --[[@as boolean]]
         x, y, z, h = table.unpack(x)
 
         if not h then
@@ -213,7 +213,7 @@ function Game.SpawnObjectAtCoords(modelHash, x, y, z, h, isNetwork, freeze)
     end
 
     if type(x) == " vector4" then
-        isNetwork = y
+        isNetwork = y --[[@as boolean]]
         x, y, z, h = table.unpack(x)
     end
 
@@ -231,11 +231,11 @@ function Game.SpawnObjectAtCoords(modelHash, x, y, z, h, isNetwork, freeze)
         return
     end
 
-    local object <const> = CreateObjectNoOffset(modelHash, x, y, z, isNetwork, false, true)
+    local object <const> = CreateObjectNoOffset(modelHash, x, y --[[@as number]], z --[[@as number]], isNetwork --[[@as boolean]], false, true)
  
-    SetEntityHeading(object, h)
+    SetEntityHeading(object, h --[[@as number]])
     PlaceObjectOnGroundProperly(object)
-    FreezeEntityPosition(object, freeze)
+    FreezeEntityPosition(object, freeze --[[@as boolean]])
     SetModelAsNoLongerNeeded(modelHash)
 
     return object
@@ -408,7 +408,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
 
     function self:isNearCoords(coord, distance)
         local playerCoords = GetEntityCoords(PlayerPedId())
-        return #(playerCoords - vec3(coord.x, coord.y, coord.z)) <= distance
+        return #(playerCoords - vector3(coord.x, coord.y, coord.z)) <= distance
     end
 
     function self:start()

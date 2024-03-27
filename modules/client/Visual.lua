@@ -154,7 +154,7 @@ function Visual.DrawProgressBar(x, y, width, height, r, g, b, a)
 end
 
 ---@param text string
----@param coords table | vec3
+---@param coords table | vector3
 ---@meta:
 --- Renders 3d text.
 function Visual.Draw3DText(text, coords)

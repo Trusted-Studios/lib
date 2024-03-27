@@ -21,7 +21,7 @@ Table = {}
 ---@return table
 function Table.RemoveAllExcept(_table, keysToKeep)
     local remainingData = {}
-    
+
     for key, value in pairs(_table) do
         local shouldRemove = true
         for _, keepKey in ipairs(keysToKeep) do

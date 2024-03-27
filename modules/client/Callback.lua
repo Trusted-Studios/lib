@@ -40,7 +40,7 @@ RegisterNetEvent('Trusted:RegisterServerCallback', function(requestId, invoker, 
     if not Callback.serverRequests[requestId] then
         return print(('[^1ERROR^7] Server Callback with requestId ^5%s^7 Was Called by ^5%s^7 but does not exist.'):format(requestId, invoker))
     end
-  
+
     Callback.serverRequests[requestId](...)
     Callback.serverRequests[requestId] = nil
 end)

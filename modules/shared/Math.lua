@@ -1,4 +1,3 @@
----@diagnostic disable: duplicate-set-field
 -- ════════════════════════════════════════════════════════════════════════════════════ --
 -- Debug Logs
 -- ════════════════════════════════════════════════════════════════════════════════════ --
@@ -59,7 +58,7 @@ function Math.GetForwardFromCoords(coords, forwardMultiplier, angleMultiplier)
 
     local angle <const> = headingRightOffset * 0.0174533
 
-    return coords + vec4(math.cos(angle) * (forwardMultiplier or 1), math.sin(angle) * (forwardMultiplier or 1), 0, 0)
+    return coords + vector4(math.cos(angle) * (forwardMultiplier or 1), math.sin(angle) * (forwardMultiplier or 1), 0, 0)
 end
 
 ---@param array table
