@@ -45,17 +45,17 @@ end
 ---@return number
 function Table.Partition(array, left, right, pivotIndex)
     local pivotValue = array[pivotIndex]
-	array[pivotIndex], array[right] = array[right], array[pivotIndex]
+    array[pivotIndex], array[right] = array[right], array[pivotIndex]
 
-	local storeIndex = left
+    local storeIndex = left
 
-	for i = left, right - 1 do
-    	if array[i] <= pivotValue then
-	        array[i], array[storeIndex] = array[storeIndex], array[i]
-	        storeIndex = storeIndex + 1
-		end
-		array[storeIndex], array[right] = array[right], array[storeIndex]
-	end
+    for i = left, right - 1 do
+        if array[i] <= pivotValue then
+            array[i], array[storeIndex] = array[storeIndex], array[i]
+            storeIndex = storeIndex + 1
+        end
+    end
+    array[storeIndex], array[right] = array[right], array[storeIndex]
     return storeIndex
 end
 
@@ -64,10 +64,12 @@ end
 ---@param right number
 function Table.QuickSort(array, left, right)
     if right > left then
-	    local pivotNewIndex = Table.Partition(array, left, right, left)
-	    Table.QuickSort(array, left, pivotNewIndex - 1)
-	    Table.QuickSort(array, pivotNewIndex + 1, right)
-	end
+        local pivotNewIndex = Table.Partition(array, left, right, left)
+        Table.QuickSort(array, left, pivotNewIndex - 1)
+        Table.QuickSort(array, pivotNewIndex + 1, right)
+    end
+
+    return array
 end
 
 ---@param table table
