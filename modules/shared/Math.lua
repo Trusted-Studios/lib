@@ -35,9 +35,17 @@ function Math.Round(int)
     return int >= 0 and math.floor(int + 0.5) or math.ceil(int - 0.5)
 end
 
+
+local angle <const> = {
+    ['front'] = 90.0,
+    ['back'] = 270.0,
+    ['left'] = 0.0,
+    ['right'] = 180.0
+}
+
 ---@param coords vector4
 ---@param forwardMultiplier number
----@param angleMultiplier? number
+---@param angleMultiplier? number | string
 ---@return vector3 | vector4
 function Math.GetForwardFromCoords(coords, forwardMultiplier, angleMultiplier)
     local x, y, z, h
@@ -50,7 +58,7 @@ function Math.GetForwardFromCoords(coords, forwardMultiplier, angleMultiplier)
         return coords
     end
 
-    local headingRightOffset = h + (angleMultiplier or 90.0)
+    local headingRightOffset = h + (angle[angleMultiplier] or angleMultiplier or 90.0)
 
     if headingRightOffset < 0.0 then
         headingRightOffset += 360.0
