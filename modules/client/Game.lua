@@ -374,7 +374,22 @@ function Game.IsNearWater(ped)
     return water, coords
 end
 
----@class Game.Location
+---@class Location
+---@field coords vector3 | vector4
+---@field firstDistance number
+---@field secondDistance number
+---@field marker boolean | function | nil
+---@field functions table?
+---@field condition function?
+---@field heavyOptimization boolean?
+---@field isNearFirstCoord boolean
+---@field isNearSecondCoord boolean
+---@field isInside boolean
+---@field approaching boolean
+---@field returnedCondition boolean
+---@field active boolean
+---@field start fun(): nil
+---@field destroy fun(): nil
 Game.Location = {}
 
 ---@class Location
@@ -385,7 +400,7 @@ Game.Location = {}
 ---@param functions table | nil
 ---@param condition function | nil
 ---@param heavyOptimization boolean | nil
----@return metatable
+---@return Location
 ---@meta: Creates a new location object.
 function Game.Location.Create(coords, firstDistance, secondDistance, marker, functions, condition, heavyOptimization)
     local self = {
