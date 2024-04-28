@@ -246,8 +246,8 @@ end
 ---@param flag number
 ---@meta:
 --- Plays an animation to the player ped.
-function Game.PlayAnimation(animDict, animName, flag)
-    local ped = PlayerPedId()
+function Game.PlayAnimation(animDict, animName, flag, ped)
+    local ped = ped or PlayerPedId()
     ClearPedTasksImmediately(ped)
     RequestAnimDict(animDict)
 

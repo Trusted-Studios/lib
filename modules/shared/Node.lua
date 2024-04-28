@@ -26,6 +26,7 @@ function Node.BinarySearch(array, target)
     local lastIndex = #root
     local midIndex = math.floor((firstIndex + lastIndex) / 2)
     while firstIndex <= lastIndex do
+        Wait(0)
         if root[midIndex] < target then
             firstIndex = midIndex + 1
         elseif root[midIndex] == target then
@@ -49,6 +50,7 @@ function Node.GetIndexFromValue(array, target)
     local lastIndex = #root
     local midIndex = math.floor((firstIndex + lastIndex) / 2)
     while firstIndex <= lastIndex do
+        Wait(0)
         if root[midIndex] < target then
             firstIndex = midIndex + 1
         elseif root[midIndex] == target then
