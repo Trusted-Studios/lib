@@ -13,6 +13,7 @@
         max: 0
     };
     let other: any
+    let value: number = 0;
 
     useNuiEvent('open:numberModal', function(data: any) {
         open = true;
@@ -22,9 +23,8 @@
         rangeLabel = data?.rangeLabel || rangeLabel,
         range = data?.range || range,
         other = data?.other
+        value = 0
     });
-
-    let value: number = 0;
 
     function confirmNumber() {
         fetchNui('confirm:numberModal', {
