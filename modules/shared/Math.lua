@@ -36,17 +36,17 @@ function Math.Round(int)
 end
 
 
-local angle <const> = {
+local angles <const> = {
     ['front'] = 90.0,
     ['back'] = 270.0,
-    ['left'] = 0.0,
-    ['right'] = 180.0
+    ['right'] = 0.0,
+    ['left'] = 180.0
 }
 
 ---@param coords vector4
 ---@param forwardMultiplier number
 ---@param angleMultiplier? number | string
----@return vector3 | vector4
+---@return vector4
 function Math.GetForwardFromCoords(coords, forwardMultiplier, angleMultiplier)
     local x, y, z, h
     if type(coords) == 'vector4' then
@@ -58,13 +58,26 @@ function Math.GetForwardFromCoords(coords, forwardMultiplier, angleMultiplier)
         return coords
     end
 
-    local headingRightOffset = h + (angle[angleMultiplier] or angleMultiplier or 90.0)
+    local angledHeading = h + (angles[angleMultiplier] or angleMultiplier or 90.0)
 
-    if headingRightOffset < 0.0 then
-        headingRightOffset += 360.0
+    if angledHeading < 0.0 then
+        angledHeading += 360.0
     end
 
-    local angle <const> = headingRightOffset * 0.0174533
+    local angle <const> = angledHeading * (math.pi / 180.0)
 
     return coords + vector4(math.cos(angle) * (forwardMultiplier or 1), math.sin(angle) * (forwardMultiplier or 1), 0, 0)
+end
+
+---@param pos vector3 | vector4
+---@param angle number
+---@param distance number
+---@return vector3
+function Math.GetOffsetPositionByAngle(pos, angle, distance)
+    local angleRad = angle * 2.0 * math.pi / 360.0
+    return vector3(
+        pos.x - distance * math.sin(angleRad),
+        pos.y + distance * math.cos(angleRad),
+        pos.z
+    )
 end
