@@ -70,7 +70,7 @@
                         {#each filteredItems.length > 0 ? filteredItems : [{}] as item, index}
                             <TableBodyRow class="cursor-pointer" on:click={() => HandleRow(item, index)}>
                                 {#each tableData?.body || [{}] as tableBodyCellKey}
-                                    <TableBodyCell tdClass="px-6 py-4 whitespace-nowrap font-medium lg:min-w-[22rem] min-w-[10rem]">{item[tableBodyCellKey] || "invalid"}</TableBodyCell>
+                                    <TableBodyCell tdClass="px-6 py-4 whitespace-nowrap font-medium lg:min-w-[14rem] min-w-[10rem]">{item[tableBodyCellKey] || "invalid"}</TableBodyCell>
                                 {/each}
                             </TableBodyRow>
                         {/each}
