@@ -21,7 +21,7 @@
 
     // NUI events & table functions
     useNuiEvent("open:table", function (data: any) {
-        open = true 
+        open = true
         text = data?.text 
         tableData = data?.tableData || tableData
         items = data?.items || items
@@ -33,10 +33,11 @@
         open = false;
     });
 
-    function HandleRow(item: any, index: any) {
-        fetchNui("table:handleRow", {
+    function HandleRow(item: any, index: number) {
+        console.log(item, index + 1, other)
+        fetchNui("confirm:table", {
             item: item,
-            index: index,
+            index: index + 1,
             other: other,
         });
     }
@@ -44,7 +45,7 @@
     function closeTable(e: any) {
         if (e.keyCode == 27) {
             open = false;
-            fetchNui("table:close");
+            fetchNui("close:table");
         }
     }
 </script>
