@@ -470,7 +470,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                 end
 
                 ---@onApproaching
-                if self.isNearFirstCoord and not self.isNearSecondCoord and not self.approaching then
+                if not self.approaching and self.isNearFirstCoord then
                     self.approaching = true
                     if self.functions?.onApproaching then
                         self.functions.onApproaching({
