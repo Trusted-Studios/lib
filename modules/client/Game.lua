@@ -397,7 +397,7 @@ Game.Location = {}
 ---@param firstDistance number
 ---@param secondDistance number
 ---@param marker boolean | function
----@param functions table | nil
+---@param functions {onApproaching: function, onLeaving: function, onEnter: function, inside: function, onExit: function} | nil
 ---@param condition function | nil
 ---@param heavyOptimization boolean | nil
 ---@return Location

@@ -30,19 +30,14 @@ end
 
 ---@param func fun(item: string | number, index: string | number, misc: any)
 function Web.Table:HandleSelection(func)
-    ---@type string | number, string | number, any
-    local data = Async.Await(function(promise)
-        RegisterNuiCallback('confirm:table', function(data, cb)
-            promise:resolve(data)
-            cb(true)
-        end)
-    end)
-
     if type(func) ~= 'function' then
         error('Invalid function passed to Table:HandleSelection')
     end
-
-    func(data.item, data.index, data.misc)
+    
+    RegisterNuiCallback('confirm:table', function(data, cb)
+        func(data.item, data.index, data.misc)
+        cb(true)
+    end)
 end
 
 function Web.Table:Close()
