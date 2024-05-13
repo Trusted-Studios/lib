@@ -29,17 +29,17 @@ end
 
 ---@param func fun(accepted: boolean, misc: any)
 function Web.Warning:HandleSelection(func)
-    ---@type boolean, any
-    local accepted, misc = Async.Await(function(promise)
-        RegisterNuiCallback('confirm:warning', function(data, cb)
-            promise:resolve(data.accepted, data.misc)
-            cb(true)
-        end)
-    end)
-
     if type(func) ~= 'function' then
         error('Invalid function passed to Warning:HandleSelection')
     end
 
-    func(accepted, misc)
+    ---@type boolean, any
+    RegisterNuiCallback('handle:warning', function(data, cb)
+        CreateThread(function()
+            func(data.accepted, data.other)
+        end)
+
+        Web:Close('warning')
+        cb(true)
+    end)
 end
