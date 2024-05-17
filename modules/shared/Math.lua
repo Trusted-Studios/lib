@@ -81,3 +81,16 @@ function Math.GetOffsetPositionByAngle(pos, angle, distance)
         pos.z
     )
 end
+
+---@param vec3 vector3
+---@param h number?
+---@return vector4
+function Math.Vec3ToVec4(vec3, h)
+    return vector4(vec3.x, vec3.y, vec3.z, h or 0)
+end
+
+---@param vec4 vector4
+---@return vector3
+function Math.Vec4ToVec3(vec4)
+    return vector3(vec4.x, vec4.y, vec4.z)
+end
