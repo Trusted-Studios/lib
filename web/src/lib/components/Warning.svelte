@@ -8,6 +8,7 @@
     let description: string = "This is a warning, would you like to continue?";
     let accept: string = "Accept";
     let decline: string = "Decline";
+    let dismissable: boolean = false;
     let other: any;
 
     useNuiEvent('open:warning', function(data: any){
@@ -15,6 +16,7 @@
         description = data?.description || description
         accept = data?.accept || accept
         decline = data?.decline || decline
+        dismissable = data?.dismissable || dismissable
         other = data?.other
     })
 
@@ -26,9 +28,15 @@
 
         open = false;
     }
+
+    $: {
+        if (open == false) {
+            fetchNui('close:warning')
+        }
+    }
 </script>
 
-<Modal bind:open size="xs" autoclose dismissable={false}>
+<Modal bind:open size="xs" autoclose dismissable={dismissable}>
     <div class="text-center">
         <ExclamationCircleOutline class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" />
         <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">{@html description.replace(/\n/g, '<br>')}</h3>

@@ -20,6 +20,7 @@ Web.Warning = {}
 ---@field description string
 ---@field accept string
 ---@field decline string
+---@field dismissable boolean
 ---@field misc any
 
 ---@param data WarningItem
@@ -39,7 +40,11 @@ function Web.Warning:HandleSelection(func)
             func(data.accepted, data.other)
         end)
 
-        Web:Close('warning')
         cb(true)
     end)
 end
+
+RegisterNuiCallback('close:warning', function(data, cb)
+    Web:Close('warning')
+    cb(true)
+end)

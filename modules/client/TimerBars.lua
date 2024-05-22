@@ -126,8 +126,6 @@ function Bars:ProgressBar(time)
             Wait(1000)
             elapsedTime += 1
         end
-
-        self:Ready(true)
     end)
     
     CreateThread(function()
@@ -135,6 +133,8 @@ function Bars:ProgressBar(time)
             Wait(10)
             percent += step
         end
+
+        self:Ready(true)
     end)
 
     CreateThread(function()
