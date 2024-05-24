@@ -236,6 +236,7 @@ function Game.SpawnObjectAtCoords(modelHash, x, y, z, h, isNetwork, freeze)
     SetEntityHeading(object, h --[[@as number]])
     PlaceObjectOnGroundProperly(object)
     FreezeEntityPosition(object, freeze --[[@as boolean]])
+    SetEntityAsMissionEntity(object, true, false)
     SetModelAsNoLongerNeeded(modelHash)
 
     return object
