@@ -3,7 +3,7 @@
 -- Debug Logs
 -- ════════════════════════════════════════════════════════════════════════════════════ --
 
-if Trusted.Debug then
+if Trusted?.Debug then
     local filename = function()
         local str = debug.getinfo(2, "S").source:sub(2)
         return str:match("^.*/(.*).lua$") or str
@@ -36,6 +36,13 @@ function Web:Open(component, bluredBackground, focus, ...)
     self.components[component] = {
         visible = true
     }
+end
+
+function Web:Trigger(component, ...)
+    SendNUIMessage({
+        action = 'trigger:'..component,
+        data = ...
+    })
 end
 
 function Web:Close(component)

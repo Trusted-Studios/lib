@@ -1,9 +1,8 @@
----@diagnostic disable: duplicate-set-field
 -- ════════════════════════════════════════════════════════════════════════════════════ --
 -- Debug Logs
 -- ════════════════════════════════════════════════════════════════════════════════════ --
 
-if Trusted.Debug then
+if Trusted?.Debug then
     local filename = function()
         local str = debug.getinfo(2, "S").source:sub(2)
         return str:match("^.*/(.*).lua$") or str
@@ -27,6 +26,7 @@ function Node.BinarySearch(array, target)
     local lastIndex = #root
     local midIndex = math.floor((firstIndex + lastIndex) / 2)
     while firstIndex <= lastIndex do
+        Wait(0)
         if root[midIndex] < target then
             firstIndex = midIndex + 1
         elseif root[midIndex] == target then
@@ -50,6 +50,7 @@ function Node.GetIndexFromValue(array, target)
     local lastIndex = #root
     local midIndex = math.floor((firstIndex + lastIndex) / 2)
     while firstIndex <= lastIndex do
+        Wait(0)
         if root[midIndex] < target then
             firstIndex = midIndex + 1
         elseif root[midIndex] == target then

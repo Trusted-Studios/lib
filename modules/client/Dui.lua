@@ -3,7 +3,7 @@
 -- Debug Logs
 -- ════════════════════════════════════════════════════════════════════════════════════ --
 
-if Trusted.Debug then
+if Trusted?.Debug then
     local filename = function()
         local str = debug.getinfo(2, "S").source:sub(2)
         return str:match("^.*/(.*).lua$") or str
@@ -158,7 +158,7 @@ end
 ---@param action string
 ---@param messageData table
 function DUI:SendMessage(action, messageData)
-    sendDuiMessage(self.object, jons.encode({
+    SendDuiMessage(self.object, json.encode({
         action = action,
         data = messageData,
     }))
@@ -186,8 +186,8 @@ function DUI:GetCursor()
 end
 
 function DUI:ProcessControls()
-    DisableControlActions(0)
-    DisableControlActions(1)
+    -- DisableControlAction(0)
+    -- DisableControlAction(1)
 
     local cursorX, cursorY self:GetCursor()
     if cursorX ~= self.lastCursorX or cursorY ~= self.lastCursorY then

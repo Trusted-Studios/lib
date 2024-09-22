@@ -1,9 +1,8 @@
----@diagnostic disable: duplicate-set-field
 -- ════════════════════════════════════════════════════════════════════════════════════ --
 -- Debug Logs
 -- ════════════════════════════════════════════════════════════════════════════════════ --
 
-if Trusted.Debug then
+if Trusted?.Debug then
     local filename = function()
         local str = debug.getinfo(2, "S").source:sub(2)
         return str:match("^.*/(.*).lua$") or str
@@ -127,8 +126,6 @@ function Bars:ProgressBar(time)
             Wait(1000)
             elapsedTime += 1
         end
-
-        self:Ready(true)
     end)
     
     CreateThread(function()
@@ -136,6 +133,8 @@ function Bars:ProgressBar(time)
             Wait(10)
             percent += step
         end
+
+        self:Ready(true)
     end)
 
     CreateThread(function()

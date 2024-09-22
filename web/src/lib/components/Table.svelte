@@ -21,7 +21,7 @@
 
     // NUI events & table functions
     useNuiEvent("open:table", function (data: any) {
-        open = true 
+        open = true
         text = data?.text 
         tableData = data?.tableData || tableData
         items = data?.items || items
@@ -33,20 +33,22 @@
         open = false;
     });
 
-    function HandleRow(item: any, index: any) {
-        fetchNui("table:handleRow", {
+    function HandleRow(item: any, index: number) {
+        fetchNui("confirm:table", {
             item: item,
-            index: index,
+            index: index + 1,
             other: other,
         });
     }
 
     function closeTable(e: any) {
-        if (!open) return;
-        
+        if (!open) {
+            return;
+        }
+
         if (e.keyCode == 27) {
             open = false;
-            fetchNui("table:close");
+            fetchNui("close:table");
         }
     }
 </script>
@@ -71,7 +73,7 @@
                         {#each filteredItems.length > 0 ? filteredItems : [{}] as item, index}
                             <TableBodyRow class="cursor-pointer" on:click={() => HandleRow(item, index)}>
                                 {#each tableData?.body || [{}] as tableBodyCellKey}
-                                    <TableBodyCell tdClass="px-6 py-4 whitespace-nowrap font-medium lg:min-w-[22rem] min-w-[10rem]">{item[tableBodyCellKey] || "invalid"}</TableBodyCell>
+                                    <TableBodyCell tdClass="px-6 py-4 whitespace-nowrap font-medium lg:min-w-[14rem] min-w-[10rem]">{item[tableBodyCellKey] || "invalid"}</TableBodyCell>
                                 {/each}
                             </TableBodyRow>
                         {/each}

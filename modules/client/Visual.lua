@@ -3,7 +3,7 @@
 -- Debug Logs
 -- ════════════════════════════════════════════════════════════════════════════════════ --
 
-if Trusted.Debug then
+if Trusted?.Debug then
     local filename = function()
         local str = debug.getinfo(2, "S").source:sub(2)
         return str:match("^.*/(.*).lua$") or str
@@ -154,7 +154,7 @@ function Visual.DrawProgressBar(x, y, width, height, r, g, b, a)
 end
 
 ---@param text string
----@param coords table | vec3
+---@param coords table | vector3
 ---@meta:
 --- Renders 3d text.
 function Visual.Draw3DText(text, coords)

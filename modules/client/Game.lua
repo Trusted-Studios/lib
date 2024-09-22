@@ -2,7 +2,7 @@
 -- Debug Logs
 -- ════════════════════════════════════════════════════════════════════════════════════ --
 
-if Trusted.Debug then
+if Trusted?.Debug then
     local filename = function()
         local str = debug.getinfo(2, "S").source:sub(2)
         return str:match("^.*/(.*).lua$") or str
@@ -90,7 +90,7 @@ function Game.DeleteVehicle(vehicle)
 end
 
 ---@param ped string
----@param x number
+---@param x number | vector4
 ---@param y number | boolean
 ---@param z number | boolean
 ---@param h number | nil
@@ -114,7 +114,7 @@ function Game.SpawnPed(ped, x, y, z, h, freeze, isNetwork)
         timeout = true
     end)
 
-    repeat Wait(10) RequestModel(model) until HasModelLoaded(model) or timeout
+    repeat Wait(10) until HasModelLoaded(model) or timeout
 
     if timeout then
         print '^1[WARNING]^0 - Unable to load ped model!'
@@ -134,7 +134,7 @@ function Game.SpawnPed(ped, x, y, z, h, freeze, isNetwork)
     return newPed
 end
 
----@param x number | vec3 | vec4
+---@param x number | vector3 | vector4
 ---@param y number
 ---@param z number
 ---@param id number
@@ -194,17 +194,17 @@ end
 
 ---@param modelHash number
 ---@param x number
----@param y number
----@param z number
----@param h number
----@param isNetwork boolean
----@param freeze? boolean
+---@param y number | boolean
+---@param z number | boolean
+---@param h number | nil
+---@param isNetwork boolean | nil
+---@param freeze? boolean | nil
 ---@return number | nil
 ---@meta:
 --- Spawns a new object and returns it entity id.
 function Game.SpawnObjectAtCoords(modelHash, x, y, z, h, isNetwork, freeze)
     if type(x) == "vector3" or type(x) == "vector4" then
-        isNetwork = y
+        isNetwork = y --[[@as boolean]]
         x, y, z, h = table.unpack(x)
 
         if not h then
@@ -213,7 +213,7 @@ function Game.SpawnObjectAtCoords(modelHash, x, y, z, h, isNetwork, freeze)
     end
 
     if type(x) == " vector4" then
-        isNetwork = y
+        isNetwork = y --[[@as boolean]]
         x, y, z, h = table.unpack(x)
     end
 
@@ -231,11 +231,12 @@ function Game.SpawnObjectAtCoords(modelHash, x, y, z, h, isNetwork, freeze)
         return
     end
 
-    local object <const> = CreateObjectNoOffset(modelHash, x, y, z, isNetwork, false, true)
+    local object <const> = CreateObjectNoOffset(modelHash, x, y --[[@as number]], z --[[@as number]], isNetwork --[[@as boolean]], false, true)
  
-    SetEntityHeading(object, h)
+    SetEntityHeading(object, h --[[@as number]])
     PlaceObjectOnGroundProperly(object)
-    FreezeEntityPosition(object, freeze)
+    FreezeEntityPosition(object, freeze --[[@as boolean]])
+    SetEntityAsMissionEntity(object, true, false)
     SetModelAsNoLongerNeeded(modelHash)
 
     return object
@@ -246,8 +247,8 @@ end
 ---@param flag number
 ---@meta:
 --- Plays an animation to the player ped.
-function Game.PlayAnimation(animDict, animName, flag)
-    local ped = PlayerPedId()
+function Game.PlayAnimation(animDict, animName, flag, ped)
+    local ped = ped or PlayerPedId()
     ClearPedTasksImmediately(ped)
     RequestAnimDict(animDict)
 
@@ -374,7 +375,22 @@ function Game.IsNearWater(ped)
     return water, coords
 end
 
----@class Game.Location
+---@class Location
+---@field coords vector3 | vector4
+---@field firstDistance number
+---@field secondDistance number
+---@field marker boolean | function | nil
+---@field functions table?
+---@field condition function?
+---@field heavyOptimization boolean?
+---@field isNearFirstCoord boolean
+---@field isNearSecondCoord boolean
+---@field isInside boolean
+---@field approaching boolean
+---@field returnedCondition boolean
+---@field active boolean
+---@field start fun(): nil
+---@field destroy fun(): nil
 Game.Location = {}
 
 ---@class Location
@@ -382,10 +398,10 @@ Game.Location = {}
 ---@param firstDistance number
 ---@param secondDistance number
 ---@param marker boolean | function
----@param functions table | nil
+---@param functions {onApproaching: function, onLeaving: function, onEnter: function, inside: function, onExit: function} | nil
 ---@param condition function | nil
 ---@param heavyOptimization boolean | nil
----@return metatable
+---@return Location
 ---@meta: Creates a new location object.
 function Game.Location.Create(coords, firstDistance, secondDistance, marker, functions, condition, heavyOptimization)
     local self = {
@@ -399,6 +415,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
         isNearFirstCoord = false,
         isNearSecondCoord = false,
         isInside = false,
+        approaching = false,
         returnedCondition = true,
         active = true
     }
@@ -407,14 +424,14 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
 
     function self:isNearCoords(coord, distance)
         local playerCoords = GetEntityCoords(PlayerPedId())
-        return #(playerCoords - vec3(coord.x, coord.y, coord.z)) <= distance
+        return #(playerCoords - vector3(coord.x, coord.y, coord.z)) <= distance
     end
 
     function self:start()
         CreateThread(function()
             if self.condition and type(self.condition) == "function" then
                 while true do
-                    Wait(self.heavyOptimization and 1000 or 250)
+                    Wait(self.heavyOptimization and 500 or 250)
                     self.returnedCondition = self.condition()
                 end
             end
@@ -424,7 +441,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
             while self.active do
                 self.isNearFirstCoord = self:isNearCoords(self.coords, self.firstDistance)
                 self.isNearSecondCoord = self:isNearCoords(self.coords, self.secondDistance)
-                Wait(self.heavyOptimization and 1500 or 500)
+                Wait(self.heavyOptimization and 800 or 500)
             end
         end)
 
@@ -439,7 +456,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                         self.marker()
                     end
                 else
-                    Wait(self.heavyOptimization and 1500 or 500)
+                    Wait(self.heavyOptimization and 800 or 500)
                 end
             end
         end)
@@ -449,13 +466,40 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                 Wait(0)
 
                 if not self.returnedCondition then
-                    Wait(self.heavyOptimization and 1500 or 500)
+                    Wait(self.heavyOptimization and 800 or 500)
                     goto continue
                 end
 
+                ---@onApproaching
+                if not self.approaching and self.isNearFirstCoord then
+                    self.approaching = true
+                    if self.functions?.onApproaching then
+                        self.functions.onApproaching({
+                            coords = self.coords,
+                            firstDistance = self.firstDistance,
+                            secondDistance = self.secondDistance,
+                            self = self
+                        })
+                    end
+                end
+
+                ---@onLeaving
+                if self.approaching and not self.isNearFirstCoord then
+                    self.approaching = false
+                    if self.functions?.onLeaving then
+                        self.functions.onLeaving({
+                            coords = self.coords,
+                            firstDistance = self.firstDistance,
+                            secondDistance = self.secondDistance,
+                            self = self
+                        })
+                    end
+                end
+
+                ---@onEnter
                 if not self.isInside and self.isNearSecondCoord then
                     self.isInside = true
-                    if self.functions and self.functions.onEnter then
+                    if self.functions?.onEnter then
                         self.functions.onEnter({
                             coords = self.coords,
                             firstDistance = self.firstDistance,
@@ -465,8 +509,9 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                     end
                 end
 
+                ---@inside
                 if self.isInside then
-                    if self.functions and self.functions.inside then
+                    if self.functions?.inside then
                         self.functions.inside({
                             coords = self.coords,
                             firstDistance = self.firstDistance,
@@ -476,10 +521,11 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                     end
                 end
 
+                ---@onExit
                 if self.isInside and not self.isNearSecondCoord then
                     self.isInside = false
 
-                    if self.functions and self.functions.onExit then
+                    if self.functions?.onExit then
                         self.functions.onExit({
                             coords = self.coords,
                             firstDistance = self.firstDistance,
@@ -490,7 +536,7 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
                 end
 
                 if not self.isNearSecondCoord then
-                    Wait(self.heavyOptimization and 1000 or 500)
+                    Wait(self.heavyOptimization and 800 or 500)
                     goto continue
                 end
 

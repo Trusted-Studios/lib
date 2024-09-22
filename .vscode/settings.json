@@ -1,12 +1,5 @@
 {
     "Lua.diagnostics.globals": [
-        "Trusted",
-        "TriggerServerEvent",
-        "RegisterNetEvent",
-    ],
-    "Lua.diagnostics.disable": [
-        "undefined-global",
-        "undefined-doc-name",
-    ],
-    "svelte.plugin.svelte.format.config.printWidth": 10000000000000000000
+        "Trusted"
+    ]
 }

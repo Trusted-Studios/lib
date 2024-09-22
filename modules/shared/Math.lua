@@ -1,9 +1,8 @@
----@diagnostic disable: duplicate-set-field
 -- ════════════════════════════════════════════════════════════════════════════════════ --
 -- Debug Logs
 -- ════════════════════════════════════════════════════════════════════════════════════ --
 
-if Trusted.Debug then
+if Trusted?.Debug then
     local filename = function()
         local str = debug.getinfo(2, "S").source:sub(2)
         return str:match("^.*/(.*).lua$") or str
@@ -36,10 +35,18 @@ function Math.Round(int)
     return int >= 0 and math.floor(int + 0.5) or math.ceil(int - 0.5)
 end
 
+
+local angles <const> = {
+    ['front'] = 90.0,
+    ['back'] = 270.0,
+    ['right'] = 0.0,
+    ['left'] = 180.0
+}
+
 ---@param coords vector4
 ---@param forwardMultiplier number
----@param angleMultiplier? number
----@return vector3 | vector4
+---@param angleMultiplier? number | string
+---@return vector4
 function Math.GetForwardFromCoords(coords, forwardMultiplier, angleMultiplier)
     local x, y, z, h
     if type(coords) == 'vector4' then
@@ -51,62 +58,39 @@ function Math.GetForwardFromCoords(coords, forwardMultiplier, angleMultiplier)
         return coords
     end
 
-    local headingRightOffset = h + (angleMultiplier or 90.0)
+    local angledHeading = h + (angles[angleMultiplier] or angleMultiplier or 90.0)
 
-    if headingRightOffset < 0.0 then
-        headingRightOffset += 360.0
+    if angledHeading < 0.0 then
+        angledHeading += 360.0
     end
 
-    local angle <const> = headingRightOffset * 0.0174533
+    local angle <const> = angledHeading * (math.pi / 180.0)
 
-    return coords + vec4(math.cos(angle) * (forwardMultiplier or 1), math.sin(angle) * (forwardMultiplier or 1), 0, 0)
+    return coords + vector4(math.cos(angle) * (forwardMultiplier or 1), math.sin(angle) * (forwardMultiplier or 1), 0, 0)
 end
 
----@param array table
----@param left number
----@param right number
----@param pivotIndex number
----@return number
-function Math.Partition(array, left, right, pivotIndex)
-    local pivotValue = array[pivotIndex]
-	array[pivotIndex], array[right] = array[right], array[pivotIndex]
-
-	local storeIndex = left
-
-	for i = left, right - 1 do
-    	if array[i] <= pivotValue then
-	        array[i], array[storeIndex] = array[storeIndex], array[i]
-	        storeIndex = storeIndex + 1
-		end
-		array[storeIndex], array[right] = array[right], array[storeIndex]
-	end
-    return storeIndex
+---@param pos vector3 | vector4
+---@param angle number
+---@param distance number
+---@return vector3
+function Math.GetOffsetPositionByAngle(pos, angle, distance)
+    local angleRad = angle * 2.0 * math.pi / 360.0
+    return vector3(
+        pos.x - distance * math.sin(angleRad),
+        pos.y + distance * math.cos(angleRad),
+        pos.z
+    )
 end
 
----@param array table
----@param left number
----@param right number
-function Math.QuickSort(array, left, right)
-    if right > left then
-	    local pivotNewIndex = Math.Partition(array, left, right, left)
-	    Math.QuickSort(array, left, pivotNewIndex - 1)
-	    Math.QuickSort(array, pivotNewIndex + 1, right)
-	end
+---@param vec3 vector3
+---@param h number?
+---@return vector4
+function Math.Vec3ToVec4(vec3, h)
+    return vector4(vec3.x, vec3.y, vec3.z, h or 0)
 end
 
----@param table table
----@return table
-function Math.Shuffle(table)
-    local shuffledTable = {}
-
-    for i = 1, #table do
-        shuffledTable[i] = table[i]
-    end
-
-    for i = #table, 2, -1 do
-        local randomIndex = math.random(i)
-        shuffledTable[i], shuffledTable[randomIndex] = shuffledTable[randomIndex], shuffledTable[i]
-    end
-
-    return shuffledTable
+---@param vec4 vector4
+---@return vector3
+function Math.Vec4ToVec3(vec4)
+    return vector3(vec4.x, vec4.y, vec4.z)
 end
