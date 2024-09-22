@@ -37,7 +37,6 @@
 
     $: {
         if (wasOpen && open == false) {
-            console.log('close')
             fetchNui('close:numberModal')
         }
     }

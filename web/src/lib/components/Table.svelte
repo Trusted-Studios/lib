@@ -34,7 +34,6 @@
     });
 
     function HandleRow(item: any, index: number) {
-        console.log(item, index + 1, other)
         fetchNui("confirm:table", {
             item: item,
             index: index + 1,
