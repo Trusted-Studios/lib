@@ -7,7 +7,7 @@ if Trusted?.Debug then
         local str = debug.getinfo(2, "S").source:sub(2)
         return str:match("^.*/(.*).lua$") or str
     end
-    print("^6[SHARED - DEBUG] ^0: "..filename()..".lua started");
+    print("^6[SHARED - DEBUG] ^0: " .. filename() .. ".lua started");
 end
 
 -- ════════════════════════════════════════════════════════════════════════════════════ --
@@ -34,7 +34,6 @@ end
 function Math.Round(int)
     return int >= 0 and math.floor(int + 0.5) or math.ceil(int - 0.5)
 end
-
 
 local angles <const> = {
     ['front'] = 90.0,
@@ -93,4 +92,13 @@ end
 ---@return vector3
 function Math.Vec4ToVec3(vec4)
     return vector3(vec4.x, vec4.y, vec4.z)
+end
+
+function Math.GetValuesInRange(t, min, max)
+    local tableValuesInRange = {}
+    for i = min, max do
+        table.insert(tableValuesInRange, t[i])
+    end
+
+    return tableValuesInRange
 end
