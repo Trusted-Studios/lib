@@ -29,13 +29,13 @@ function Visual.AddLongString(text)
 end
 
 ---@param text string
----@param bleep boolean
+---@param bleep boolean?
 ---@meta:
 --- Adds a basic GTA help notification in the top left side of screen.
 function Visual.ShowHelp(text, bleep)
     BeginTextCommandDisplayHelp("STRING")
     AddTextComponentSubstringPlayerName(text)
-    EndTextCommandDisplayHelp(0, false, bleep, -1)
+    EndTextCommandDisplayHelp(0, false, bleep or false, -1)
 end
 
 ---@param text string

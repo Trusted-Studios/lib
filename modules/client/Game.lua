@@ -333,7 +333,7 @@ end
 ---@param ped number
 ---@param targetCoords vector3
 ---@param distance number
----@param reverse boolean
+---@param reverse boolean?
 ---@return boolean
 ---@meta:
 --- Returns if the given ped is near the target coords based on the rquired distance. 
