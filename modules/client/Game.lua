@@ -192,7 +192,7 @@ function Game.AddRadiusBlip(x, y, z, id, scale, color, enableWaypoint, blipLabel
     return blip
 end
 
----@param modelHash number
+---@param modelHash number | string
 ---@param x number
 ---@param y number | boolean
 ---@param z number | boolean
@@ -390,7 +390,7 @@ end
 ---@field returnedCondition boolean
 ---@field active boolean
 ---@field start fun(): nil
----@field destroy fun(): nil
+---@field destroy fun(triggerFunction?: boolean): nil
 Game.Location = {}
 
 ---@class Location
@@ -398,7 +398,7 @@ Game.Location = {}
 ---@param firstDistance number
 ---@param secondDistance number
 ---@param marker boolean | function
----@param functions {onApproaching: function, onLeaving: function, onEnter: function, inside: function, onExit: function} | nil
+---@param functions {onApproaching: function, onLeaving: function, onEnter: function, inside: function, onExit: function, onDestroy: function} | nil
 ---@param condition function | nil
 ---@param heavyOptimization boolean | nil
 ---@return Location
@@ -545,7 +545,16 @@ function Game.Location.Create(coords, firstDistance, secondDistance, marker, fun
         end)
     end
 
-    function self:destroy()
+    --- destroys the location object
+    ---@param triggerFunction boolean?
+    function self:destroy(triggerFunction)
+        print("destroy")
+
+        if triggerFunction then
+            self.functions.onDestroy({
+                self = self
+            })
+        end
         self.returnedCondition = false
         self.isNearFirstCoord = false
         self.isNearSecondCoord = false
