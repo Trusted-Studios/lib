@@ -16,10 +16,17 @@ end
 
 Random = {
     numberCharset = {},
-    charset = {}
+    charset = {},
+    seeded = false
 }
 
 function Random:init()
+    if self.seeded then
+        return
+    end
+
+    math.randomseed(GetGameTimer and GetGameTimer() or os.time())
+
     for i = 48, 57 do 
         table.insert(self.numberCharset, string.char(i)) 
     end
@@ -31,16 +38,33 @@ function Random:init()
     for i = 97, 122 do 
         table.insert(self.charset, string.char(i)) 
     end
+
+    self.seeded = true
 end
 
+---@param charset table
+---@param length number
+---@return string
+function Random:FromCharset(charset, length)
+    local result = {}
+
+    for i = 1, length do
+        result[i] = charset[math.random(1, #charset)]
+    end
+
+    return table.concat(result)
+end
+
+---@param length number
+---@return string
 function Random:Letter(length)
-    math.randomseed(GetGameTimer())
-    return (length > 0) and (self:Letter(length - 1) .. self.charset[math.random(1, #self.charset)]) or ''
+    return self:FromCharset(self.charset, length)
 end
 
+---@param length number
+---@return string
 function Random:Number(length)
-    math.randomseed(GetGameTimer())
-    return (length > 0) and (self:Number(length - 1) .. self.numberCharset[math.random(1, #self.numberCharset)]) or ''
+    return self:FromCharset(self.numberCharset, length)
 end
 
 Random:init()

@@ -58,10 +58,11 @@ DUI = {}
 ---@return table
 function DUI:Register(data)
     local DuiObject = {}
+    local model = data.model or ""
 
     DuiObject.renderTarget = {
-        model = data.model or "",
-        modelHash = joaat(data.model),
+        model = model,
+        modelHash = joaat(model),
         target = data.target or "",
         resolution = data.resolution or {x = 1920, y = 1080},
     }
@@ -74,9 +75,11 @@ function DUI:Register(data)
     DuiObject.txt = nil
     DuiObject.lastCursorX, DuiObject.lastCursorY = 0, 0
     ---@diagnostic disable-next-line: missing-parameter, param-type-mismatch
-    DuiObject.txd = CreateRuntimeTexture(DuiObject.RenderTarget.model)
+    DuiObject.txd = CreateRuntimeTxd(DuiObject.renderTarget.model)
     DuiObject.isInteracting = false
     DuiObject.metadata = {}
+
+    setmetatable(DuiObject, {__index = DUI})
 
     return DuiObject
 end
@@ -189,7 +192,7 @@ function DUI:ProcessControls()
     -- DisableControlAction(0)
     -- DisableControlAction(1)
 
-    local cursorX, cursorY self:GetCursor()
+    local cursorX, cursorY = self:GetCursor()
     if cursorX ~= self.lastCursorX or cursorY ~= self.lastCursorY then
         self.lastCursorX = cursorX
         self.lastCursorY = cursorY
@@ -219,15 +222,15 @@ function DUI:ProcessControls()
     end
 end
 
-function DUI:ToogleFocus()
+function DUI:ToggleFocus()
     if not self.isInteracting then
         local object = self.nearestRender
-        SetNuiFocus(true, true)
 
         if  not object or object < 1 then
             return
         end
 
+        SetNuiFocus(true, true)
         SetFocusEntity(object)
     else
         SetNuiFocus(false, false)
@@ -238,6 +241,8 @@ function DUI:ToogleFocus()
 
     self.isInteracting = not self.isInteracting
 end
+
+DUI.ToogleFocus = DUI.ToggleFocus
 
 ---@param enabled boolean
 function DUI:SetControlEnabled(enabled)

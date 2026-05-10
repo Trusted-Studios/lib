@@ -16,19 +16,34 @@ end
 Files = {}
 
 ---@param fileName string
----@return table | string
+---@return table | nil, string | nil
 function Files.ReadJSON(fileName)
     local fileContent = LoadResourceFile(GetCurrentResourceName(), fileName)
 
-    return json.decode(fileContent) or 'File not found'
+    if not fileContent then
+        return nil, ('File not found: %s'):format(fileName)
+    end
+
+    local success, data = pcall(json.decode, fileContent)
+
+    if not success or not data then
+        return nil, ('Invalid JSON in file: %s'):format(fileName)
+    end
+
+    return data, nil
 end
 
 ---@param fileName string
 ---@param content table
+---@return boolean, string | nil
 function Files.WriteJSON(fileName, content)
     local success = SaveResourceFile(GetCurrentResourceName(), fileName, json.encode(content), -1)
 
     if not success then 
-        print('[ERROR] - file could not be saved')
+        local errorMessage = ('File could not be saved: %s'):format(fileName)
+        print(('[ERROR] - %s'):format(errorMessage))
+        return false, errorMessage
     end
+
+    return true, nil
 end
